@@ -1,0 +1,25 @@
+{
+  "name": "wangct-util",
+  "version": "1.0.21",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "babel": "node dev/babel"
+  },
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "lib",
+    "dev",
+    "README.md"
+  ],
+  "devDependencies": {
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "wangct-babel": "^1.0.0",
+    "wt-butil": "^1.0.22",
+    "wt-util": "^1.3.5"
+  }
+}
