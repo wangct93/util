@@ -6,10 +6,6 @@ const t = +new Date();
 new Babel({
     src:'es',
     output:'lib',
-    option:{
-        presets: ['react','env','stage-0'],
-        plugins: ["transform-decorators-legacy"]
-    },
     success(){
         console.log(`success，用时：${+new Date() - t}ms`);
     }

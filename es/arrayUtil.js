@@ -61,7 +61,7 @@ export default {
         return ary.map(item => {
             const list = func(item) ? [item] : [];
             const children = item[childrenField] || [];
-            const childrenResult = children.length && this.findChild(children,func);
+            const childrenResult = children.length && this.findChildren(children,func);
             return childrenResult ? list.concat(childrenResult) : list;
         }).reduce((pv,item) => pv.concat(item),[]);
     }
