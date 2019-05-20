@@ -1,10 +1,11 @@
 {
   "name": "wangct-util",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "babel": "node dev/babel"
+    "babel": "node dev/babel",
+    "publish": "npm pu --registry https://registry.npmjs.org/"
   },
   "author": "",
   "license": "ISC",

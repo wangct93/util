@@ -271,7 +271,8 @@ function cookie(key,value,options = {}){
     if(isDef(value)){
         window.document.cookie = key + '=' + value + ';' + utils.string.stringify(options,'=',';');
     }else{
-        return utils.string.parse(window.document.cookie,'=',';');
+        const cookie = utils.string.parse(window.document.cookie,'=',';');
+        return isDef(key) ? cookie[key] : cookie;
     }
 }
 
