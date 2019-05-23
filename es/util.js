@@ -1,7 +1,4 @@
-import asyncImport from './async';
-const utils = asyncImport({
-    string:() => require('./stringUtil').default
-});
+import stringUtil from './stringUtil';
 
 export default {
     /*类型判断*/
@@ -26,7 +23,6 @@ export default {
     callFunc,
     random,
     classNames,
-    asyncImport,
     getQsParams,
     getQsString,
     cookie,
@@ -234,7 +230,7 @@ class CacheData{
         const keys = Object.keys(cache);
         if(keys.length > this.getProps().limit){
             const deleteKey = keys.sort((a,b) => cache[a].time - cache[b].time)[0];
-            delete allCache[deleteKey];
+            delete cache[deleteKey];
         }
     }
 
@@ -260,18 +256,18 @@ function classNames(){
 }
 
 function getQsParams(){
-    return utils.string.parse(window.location.search.substr(1));
+    return stringUtil.parse(window.location.search.substr(1));
 }
 
 function getQsString(params,originParams = {}){
-    return utils.string.stringify({...originParams, ...params});
+    return stringUtil.stringify({...originParams, ...params});
 }
 
 function cookie(key,value,options = {}){
     if(isDef(value)){
-        window.document.cookie = key + '=' + value + ';' + utils.string.stringify(options,'=',';');
+        window.document.cookie = key + '=' + value + ';' + stringUtil.stringify(options,'=',';');
     }else{
-        const cookie = utils.string.parse(window.document.cookie,'=',';');
+        const cookie = stringUtil.parse(window.document.cookie,'=',';');
         return isDef(key) ? cookie[key] : cookie;
     }
 }

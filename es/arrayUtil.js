@@ -1,10 +1,7 @@
-import asyncImport from './async';
-const utils = asyncImport({
-    base:() => require('./util').default
-});
+import util from './util';
 
 function isFunc(v){
-    return utils.base.isFunc(v);
+    return util.isFunc(v);
 }
 
 export default {

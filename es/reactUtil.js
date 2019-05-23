@@ -1,7 +1,4 @@
-import asyncImport from './async';
-const utils = asyncImport({
-  base:() => require('./util').default
-});
+import util from './util';
 
 export default {
   getProps,
@@ -36,22 +33,9 @@ function getDispatch(modelName = 'global') {
     type = type.includes('/') ? type : modelName + '/' + type;
     const typeAry = type.split('/');
     type = typeAry[0] === 'global' ? typeAry[1] : type;
-    utils.base.callFunc(this.dispatch,{
+    util.callFunc(this.dispatch,{
       ...action,
       type
     });
   }
-}
-
-function loading(func,msg) {
-  const dispatch = this.getDispatch();
-  dispatch({
-    type: 'global/loading',
-    message: msg || '正在加载数据，请稍候...'
-  });
-  utils.base.callFunc(func, () => {
-    dispatch({
-      type: 'global/loading'
-    });
-  });
 }

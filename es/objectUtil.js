@@ -1,7 +1,4 @@
-import asyncImport from './async';
-const utils = asyncImport({
-  array:() => require('./arrayUtil').default
-});
+import arrayUtil from './arrayUtil';
 
 export default {
   toObject(obj){
@@ -13,13 +10,13 @@ export default {
     });
   },
   clone(obj = {},keys = []){
-    return utils.array.toObject(keys,item => item,item => obj[item]);
+    return arrayUtil.toObject(keys,item => item,item => obj[item]);
   },
   filter(obj,fn){
     return this.clone(obj,Object.keys(obj).filter((key) => fn(obj[key],key,obj)));
   },
   map(obj,fn){
-    return utils.array.toObject(Object.keys(obj),item => item,item => fn(obj[item],item,obj));
+    return arrayUtil.toObject(Object.keys(obj),item => item,item => fn(obj[item],item,obj));
   },
   some(obj,func){
     return Object.keys(obj).some(key => func(obj[key],key,obj));

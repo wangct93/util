@@ -1,7 +1,4 @@
-import asyncImport from './async';
-const utils = asyncImport({
-    string:() => require('./stringUtil').default
-});
+import stringUtil from './stringUtil';
 
 export default {
     format(...args){
@@ -18,7 +15,7 @@ export default {
         Object.keys(config).forEach(key => {
             result = result.replace(new RegExp(`${key  }+`,'g'),(match) => {
                 const value = config[key];
-                return utils.string.addZero(value,match.length);
+                return stringUtil.addZero(value,match.length);
             });
         });
         return result;
