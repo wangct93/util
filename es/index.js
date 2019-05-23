@@ -6,4 +6,4 @@ export numberUtil from './numberUtil';
 export objectUtil from './objectUtil';
 export reactUtil from './reactUtil';
 export util from './util';
-export default util;
+export default from './util';
