@@ -1,11 +1,11 @@
 {
-  "name": "wangct-util",
-  "version": "1.0.25",
+  "name": "afc-util-browser",
+  "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "babel": "node dev/babel",
-    "publish": "npm pu --registry https://registry.npmjs.org/"
+    "publish": "npm pu --registry http://192.168.178.235:8081/repository/npm-hosted/"
   },
   "author": "",
   "license": "ISC",
