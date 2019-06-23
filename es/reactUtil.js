@@ -1,41 +1,33 @@
-import util from './util';
+import * as util from './util';
 
-export default {
-  getProps,
-  setHistory,
-  getHistory,
-  setDispatch,
-  getDispatch
-};
 
-function getProps(target){
+const cache = {};
+
+export function getProps(target){
   return {
     ...target.state,
     ...target.props
   }
 }
 
-function setHistory(history){
-  this.history = history;
+export function setHistory(history){
+  cache.history = history;
 }
 
-function getHistory(){
-  return this.history || window.history;
+export function getHistory(){
+  return cache.history;
 }
 
-function setDispatch(dispatch){
-  this.dispatch = dispatch;
+export function setDispatch(dispatch){
+  cache.dispatch = dispatch;
 }
 
-function getDispatch(modelName = 'global') {
+export function getDispatch(namespace = 'global') {
   return (action) => {
-    let {type = ''} = action;
-    type = type.includes('/') ? type : modelName + '/' + type;
-    const typeAry = type.split('/');
-    type = typeAry[0] === 'global' ? typeAry[1] : type;
-    util.callFunc(this.dispatch,{
+    const [typespace,funcField] = action.type.split('/');
+    util.callFunc(cache.dispatch,{
       ...action,
-      type
+      type:funcField ? type : namespace + '/' + typespace
     });
   }
 }

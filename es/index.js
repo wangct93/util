@@ -1,9 +1,20 @@
 
-export dateUtil from './dateUtil';
-export stringUtil from './stringUtil';
-export arrayUtil from './arrayUtil';
-export numberUtil from './numberUtil';
-export objectUtil from './objectUtil';
-export reactUtil from './reactUtil';
-export util from './util';
-export default from './util';
+
+import * as dateUtil from './dateUtil';
+import * as stringUtil from './stringUtil';
+import * as arrayUtil from './arrayUtil';
+import * as numberUtil from './numberUtil';
+import * as objectUtil from './objectUtil';
+import * as reactUtil from './reactUtil';
+import * as util from './util';
+
+export default util;
+export {
+  dateUtil,
+  stringUtil,
+  arrayUtil,
+  numberUtil,
+  objectUtil,
+  reactUtil,
+  util
+}
