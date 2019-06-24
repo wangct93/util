@@ -1,103 +1,21 @@
-import stringUtil from './stringUtil';
+import * as stringUtil from './stringUtil';
+import * as typeUtil from './typeUtil';
+import * as objectUtil from './objectUtil';
+import {isDef} from "./typeUtil";
+import {isBoolean} from "./typeUtil";
+import {isObject} from "./typeUtil";
+import {isArray} from "./typeUtil";
+import {isUndef} from "./typeUtil";
 
-export default {
-    /*类型判断*/
-    isFalse,
-    isTrue,
-    isFunc,
-    isNum,
-    isString,
-    isObject,
-    isArray,
-    isBoolean,
-    isRegExp,
-    isPromise,
-    isDate,
-    isDef,
-    isUndef,
-    isNull,
-    /*类型判断*/
-    equal,
-    queue,
-    cache,
-    callFunc,
-    random,
-    classNames,
-    getQsParams,
-    getQsString,
-    cookie,
-    cloneFunc,
-    extend,
-    scroll
-};
+const {isFunc} = typeUtil;
 
-function _getType(v){
-    return Object.prototype.toString.call(v);
-}
-
-function isFunc(v){
-    return _getType(v) === '[object Function]';
-}
-
-function isNum(v){
-    return _getType(v) === '[object Number]';
-}
-
-function isArray(v){
-    return _getType(v) === '[object Array]';
-}
-
-function isBoolean(v){
-    return _getType(v) === '[object Boolean]';
-}
-
-function isObject(v){
-    return _getType(v) === '[object Object]';
-}
-
-function isString(v){
-    return _getType(v) === '[object String]';
-}
-
-function isDate(v){
-    return _getType(v) === '[object Date]';
-}
-
-function isUndef (v) {
-    return v === undefined;
-}
-
-function isDef (v) {
-    return v !== undefined && v !== null;
-}
-
-function isTrue (v) {
-    return v === true;
-}
-
-function isFalse (v) {
-    return v === false;
-}
-
-function isNull (v) {
-    return v === null;
-}
-
-function isPromise (v) {
-    return isDef(v) && typeof isFunc(v.then) && isFunc(v.catch)
-}
-
-function isRegExp(v){
-    return _getType(v) === '[object RegExp]';
-}
-
-function callFunc(func,...ary) {
+export function callFunc(func,...ary) {
     if (isFunc(func)) {
         return func.call(this, ...ary);
     }
 }
 
-function equal(self,other) {
+export function equal(self,other) {
     if (_getType(self) === _getType(other) && isDef(self)) {
         const keys = Object.keys(self);
         return keys.length === Object.keys(other).length && keys.every(key => self[key] === other[key])
@@ -106,7 +24,7 @@ function equal(self,other) {
     }
 }
 
-function queue(option){
+export function queue(option){
     return new Queue(option);
 }
 
@@ -182,7 +100,7 @@ class Queue {
     }
 }
 
-function cache(options){
+export function cache(options){
     return new CacheData(options);
 }
 
@@ -247,23 +165,20 @@ class CacheData{
     }
 }
 
-function random(){
-    return parseInt(+Math.random().toString().substr(3) + +new Date()).toString(36)
-}
 
-function classNames(){
+export function classNames(){
     return Array.from(arguments).filter(item => !!item).join(' ');
 }
 
-function getQsParams(){
+export function getQsParams(){
     return stringUtil.parse(window.location.search.substr(1));
 }
 
-function getQsString(params,originParams = {}){
+export function getQsString(params,originParams = {}){
     return stringUtil.stringify({...originParams, ...params});
 }
 
-function cookie(key,value,options = {}){
+export function cookie(key,value,options = {}){
     if(isDef(value)){
         window.document.cookie = key + '=' + value + ';' + stringUtil.stringify(options,'=',';');
     }else{
@@ -272,11 +187,11 @@ function cookie(key,value,options = {}){
     }
 }
 
-function cloneFunc(v){
+export function cloneFunc(v){
     return new Function('return ' + v.toString())()
 }
 
-function extend(){
+export function extend(){
     const args = Array.from(arguments);
     let deep = false;
     let index = 1;
@@ -308,6 +223,38 @@ function extend(){
     return target;
 }
 
-function scroll(num){
+export function scroll(num){
     window.document.documentElement.scrollTop = num;
+}
+
+
+
+const randomChars = [];
+initRandomChars();
+
+export function random(length){
+    if(isUndef(length)){
+        return parseInt(+Math.random().toString().substr(3) + +new Date()).toString(36);
+    }
+    return new Array(length).fill(0).map(() => getRandomChar()).join('');
+}
+
+function getRandomChar(){
+    return randomChars[Math.floor(Math.random() * randomChars.length)];
+}
+
+
+function initRandomChars(){
+    const temp = {
+        '0':10,
+        'aA':26,
+    };
+    objectUtil.forEach(temp,(value,key) => {
+        key.split('').forEach(char => {
+            const baseCode = char.charCodeAt(0);
+            new Array(value).fill(0).forEach((v,i) => {
+                randomChars.push(String.fromCharCode(baseCode + i));
+            });
+        });
+    });
 }
