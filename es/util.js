@@ -16,7 +16,7 @@ export function callFunc(func,...ary) {
 }
 
 export function equal(self,other) {
-    if (_getType(self) === _getType(other) && isDef(self)) {
+    if (typeof self === 'object' && typeof other === 'object' && isDef(self) && isDef(other)) {
         const keys = Object.keys(self);
         return keys.length === Object.keys(other).length && keys.every(key => self[key] === other[key])
     } else {
@@ -257,4 +257,8 @@ function initRandomChars(){
             });
         });
     });
+}
+
+export async function promise(func){
+    return isFunc(func) ? func() : func;
 }

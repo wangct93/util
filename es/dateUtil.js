@@ -1,3 +1,4 @@
+import {isDate} from "./typeUtil";
 
 export function format(...args){
     const [date,format = 'YYYY-MM-DD hh:mm:ss'] = formatArgs(...args);
@@ -55,8 +56,8 @@ function diff(type,...args){
 
 function formatArgs(...args){
     const ary = Array.from(args);
-    if(!(ary[0] instanceof Date)){
-        ary.unshift(new Date());
+    if(!isDate(ary[0])){
+      ary.unshift(new Date());
     }
     return ary;
 }
