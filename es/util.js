@@ -1,13 +1,8 @@
 import * as stringUtil from './stringUtil';
-import * as typeUtil from './typeUtil';
 import * as objectUtil from './objectUtil';
-import {isDef} from "./typeUtil";
-import {isBoolean} from "./typeUtil";
-import {isObject} from "./typeUtil";
-import {isArray} from "./typeUtil";
-import {isUndef} from "./typeUtil";
+import {isFunc,isBoolean,isObject,isArray,isUndef,isDef} from "./typeUtil";
 
-const {isFunc} = typeUtil;
+export * from './typeUtil';
 
 export function callFunc(func,...ary) {
     if (isFunc(func)) {
