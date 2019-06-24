@@ -1,5 +1,8 @@
-import {isFunc,isString,isDef} from './typeUtil';
+import {isFunc,isArray,isDef} from './typeUtil';
 
+export function toArray(ary){
+    return isArray(ary) ? ary : isDef(ary) ? [ary] : []
+}
 
 export function toObject(ary, keyFunc, valueFunc){
     const result = {};
