@@ -4,9 +4,9 @@ export function toArray(ary){
     return isArray(ary) ? ary : isDef(ary) ? [ary] : []
 }
 
-export function toObject(ary, keyFunc, valueFunc){
+export function toObject(ary, key, valueFunc){
     const result = {};
-    keyFunc = formatFunc(keyFunc,item => item[keyFunc]);
+    const keyFunc = formatFunc(key,item => item[key]);
     valueFunc = formatFunc(valueFunc,item => item);
     ary.forEach((item, i) => {
         result[keyFunc(item,i,ary)] = valueFunc(item,i,ary);
