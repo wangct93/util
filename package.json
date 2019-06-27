@@ -1,11 +1,12 @@
 {
   "name": "wangct-util",
-  "version": "1.0.31",
+  "version": "1.0.33",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "babel": "node dev/babel",
-    "publish": "npm pu --registry https://registry.npmjs.org/"
+    "publish": "npm pu --registry https://registry.npmjs.org/",
+    "test": "node test"
   },
   "author": "",
   "license": "ISC",
@@ -14,9 +15,7 @@
     "README.md"
   ],
   "devDependencies": {
-    "wangct-babel": "^1.0.7"
-  },
-  "dependencies": {
+    "wangct-babel": "^1.0.7",
     "@babel/runtime": "^7.4.5"
   }
 }

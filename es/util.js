@@ -254,6 +254,6 @@ function initRandomChars(){
     });
 }
 
-export async function promise(func){
-    return isFunc(func) ? func() : func;
+export function promise(func){
+    return Promise.resolve(isFunc(func) ? func() : func);
 }
