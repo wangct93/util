@@ -1,31 +1,35 @@
-import * as util from './util';
+import {callFunc} from './util';
 
 
-const cache = {};
+const self = {};
 
-export function getProps(target){
-  return {
+export function getProps(target,filterFields){
+  const props = {
     ...target.state,
     ...target.props
-  }
+  };
+  filterFields.forEach(field => {
+    delete props[field];
+  });
+  return props;
 }
 
 export function setHistory(history){
-  cache.history = history;
+  self.history = history;
 }
 
 export function getHistory(){
-  return cache.history;
+  return self.history;
 }
 
 export function setDispatch(dispatch){
-  cache.dispatch = dispatch;
+  self.dispatch = dispatch;
 }
 
 export function getDispatch(namespace = 'global') {
   return (action) => {
     const [typespace,funcField] = action.type.split('/');
-    util.callFunc(cache.dispatch,{
+    callFunc(self.dispatch,{
       ...action,
       type:funcField ? type : namespace + '/' + typespace
     });

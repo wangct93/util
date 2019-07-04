@@ -9,10 +9,6 @@ new Babel({
   option: {
     presets: ['@babel/preset-react', '@babel/preset-env'],
     plugins: [
-      ['@babel/plugin-transform-typescript', {
-        isTSX: true,
-        allExtensions: true
-      }],
       // '@babel/plugin-transform-runtime',
       '@babel/plugin-syntax-dynamic-import',
       ['@babel/plugin-proposal-decorators', {legacy: true}],

@@ -6,6 +6,7 @@ import * as arrayUtil from './arrayUtil';
 import * as numberUtil from './numberUtil';
 import * as objectUtil from './objectUtil';
 import * as reactUtil from './reactUtil';
+import * as promiseUtil from './promiseUtil';
 import * as util from './util';
 
 export default util;
@@ -16,5 +17,6 @@ export {
   numberUtil,
   objectUtil,
   reactUtil,
+  promiseUtil,
   util
 }
