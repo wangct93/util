@@ -51,7 +51,7 @@ export function findChild(ary,func,childrenField = 'children'){
             return item;
         }
         const children = item[childrenField] || [];
-        const childrenResult = children.length && findChild(children,func);
+        const childrenResult = children.length && findChild(children,func,childrenField);
         if(childrenResult){
             return childrenResult;
         }
@@ -63,7 +63,7 @@ export function findChildren(ary,func,childrenField = 'children'){
     return ary.map(item => {
         const list = func(item) ? [item] : [];
         const children = item[childrenField] || [];
-        const childrenResult = children.length && findChildren(children,func);
+        const childrenResult = children.length && findChildren(children,func,childrenField);
         return childrenResult ? list.concat(childrenResult) : list;
     }).reduce((pv,item) => pv.concat(item),[]);
 }

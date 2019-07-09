@@ -35,3 +35,18 @@ export function getDispatch(namespace = 'global') {
     });
   }
 }
+
+export function showLoading(func,message = '操作处理中...'){
+  const dispatch = getDispatch();
+  dispatch({
+    type:'updateField',
+    field:'loading',
+    data:message
+  });
+  callFunc(func,() => {
+    dispatch({
+      type:'updateField',
+      field:'loading'
+    });
+  })
+}
