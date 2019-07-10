@@ -3,7 +3,7 @@ import {callFunc} from './util';
 
 const self = {};
 
-export function getProps(target,filterFields){
+export function getProps(target,filterFields = []){
   const props = {
     ...target.state,
     ...target.props
