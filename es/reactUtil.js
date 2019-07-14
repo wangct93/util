@@ -31,7 +31,7 @@ export function getDispatch(namespace = 'global') {
     const [typespace,funcField] = action.type.split('/');
     callFunc(self.dispatch,{
       ...action,
-      type:funcField ? type : namespace + '/' + typespace
+      type:funcField ? action.type : namespace + '/' + typespace
     });
   }
 }

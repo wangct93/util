@@ -166,7 +166,7 @@ export function classNames(){
 }
 
 export function getQsParams(){
-    return stringUtil.parse(window.location.search.substr(1));
+    return stringUtil.strParse(window.location.search.substr(1));
 }
 
 export function getQsString(params,originParams = {}){
@@ -177,7 +177,7 @@ export function cookie(key,value,options = {}){
     if(isDef(value)){
         window.document.cookie = key + '=' + value + ';' + stringUtil.stringify(options,'=',';');
     }else{
-        const cookie = stringUtil.parse(window.document.cookie,'=',';');
+        const cookie = stringUtil.strParse(window.document.cookie,'=',';');
         return isDef(key) ? cookie[key] : cookie;
     }
 }
@@ -253,4 +253,11 @@ function initRandomChars(){
         });
     });
 }
+
+export function loop(count = 0,func){
+    new Array(count).fill(true).forEach((item,i) => {
+        func(i);
+    })
+}
+
 

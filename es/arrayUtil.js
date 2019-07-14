@@ -1,10 +1,12 @@
 import {isFunc,isArray,isDef} from './typeUtil';
+import {validateArray} from "./validateUtil";
 
 export function toArray(ary){
     return isArray(ary) ? ary : isDef(ary) ? [ary] : []
 }
 
-export function toObject(ary, key, valueFunc){
+export function aryToObject(ary, key, valueFunc){
+    validateArray(ary);
     const result = {};
     const keyFunc = formatFunc(key,item => item[key]);
     valueFunc = formatFunc(valueFunc,item => item);
@@ -14,14 +16,26 @@ export function toObject(ary, key, valueFunc){
     return result;
 }
 
-export function remove(ary, item){
-    const index = ary.indexOf(item);
-    if (index !== -1) {
-        ary.splice(index, 1);
+export function aryRemove(ary, func){
+    validateArray(ary);
+    if(isFunc(func)){
+        for(let i = 0;i < ary.length;i++){
+            const item = ary[i];
+            if(func(item,i,ary)){
+                ary.splice(i,1);
+                i--;
+            }
+        }
+    }else{
+        const index = ary.indexOf(func);
+        if (index !== -1) {
+            ary.splice(index, 1);
+        }
     }
 }
 
 export function classify(ary,keyFunc = 'type',valueFunc){
+    validateArray(ary);
     const result = {};
     keyFunc = formatFunc(keyFunc,item => item[keyFunc]);
     valueFunc = formatFunc(valueFunc,item => item);
@@ -36,14 +50,17 @@ export function classify(ary,keyFunc = 'type',valueFunc){
 }
 
 export function noRepeat(ary){
+    validateArray(ary);
     return Array.from(new Set(ary));
 }
 
 export function compact(ary){
+    validateArray(ary);
     return ary.filter(item => isDef(item))
 }
 
 export function findChild(ary,func,childrenField = 'children'){
+    validateArray(ary);
     func = formatFunc(func,item => item === func);
     for(let i = 0;i < ary.length;i++){
         const item = ary[i];
@@ -59,6 +76,7 @@ export function findChild(ary,func,childrenField = 'children'){
 }
 
 export function findChildren(ary,func,childrenField = 'children'){
+    validateArray(ary);
     func = formatFunc(func,item => item === func);
     return ary.map(item => {
         const list = func(item) ? [item] : [];
@@ -68,6 +86,6 @@ export function findChildren(ary,func,childrenField = 'children'){
     }).reduce((pv,item) => pv.concat(item),[]);
 }
 
-export function formatFunc(func,defaultFunc){
+function formatFunc(func,defaultFunc){
     return isFunc(func) ? func : defaultFunc;
 }

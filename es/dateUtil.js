@@ -1,6 +1,6 @@
 import {isDate} from "./typeUtil";
 
-export function format(...args){
+export function dateFormat(...args){
     const [date,format = 'YYYY-MM-DD hh:mm:ss'] = formatArgs(...args);
     const config = {
         Y: date.getFullYear(),

@@ -1,10 +1,9 @@
-import {toNumber} from './numberUtil';
 
 export function toString(str){
   return str ? str + '' : '';
 }
 
-export function computeDiff(self = '',other = ''){
+export function strDiff(self = '',other = ''){
   const len = Math.max(self.length,other.length);
   let selfNum = 0;
   let otherNum = 0;
@@ -14,10 +13,6 @@ export function computeDiff(self = '',other = ''){
     otherNum += other[i] ? other.charCodeAt(i) / (100 ** (i - n)) : 0;
   });
   return selfNum - otherNum;
-}
-
-export function toMoneyFormat(str = '0'){
-  return parseInt(toNumber(str,0),10).toString().replace(/\B(?=(\d{3})+$)/g,',')
 }
 
 export function decodeHtml(str = ''){
@@ -77,7 +72,7 @@ export function decodeHtml(str = ''){
   return newStr === str ? newStr : decodeHtml(newStr);
 }
 
-export function parse(str = '',equalSep = '=',linkSep = '&'){
+export function strParse(str = '',equalSep = '=',linkSep = '&'){
   const result = {};
   str.split(linkSep).forEach(item => {
     const [key = '',value = ''] = item.split(equalSep);

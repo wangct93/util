@@ -1,5 +1,5 @@
-import * as arrayUtil from './arrayUtil';
 import {isObject} from './typeUtil';
+import {aryToObject} from "./arrayUtil";
 
 
 export function toObject(obj){
@@ -13,7 +13,7 @@ export function forEach(obj,func){
 }
 
 export function clone(obj = {},keys = []){
-  return arrayUtil.toObject(keys,item => item,item => obj[item]);
+  return aryToObject(keys,item => item,item => obj[item]);
 }
 
 export function filter(obj,func){
@@ -21,7 +21,7 @@ export function filter(obj,func){
 }
 
 export function map(obj,func){
-  return arrayUtil.toObject(Object.keys(obj),item => item,item => func(obj[item],item,obj));
+  return aryToObject(Object.keys(obj),item => item,item => func(obj[item],item,obj));
 }
 
 export function some(obj,func){

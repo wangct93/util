@@ -1,6 +1,6 @@
 {
   "name": "wangct-util",
-  "version": "1.0.36",
+  "version": "1.0.44",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -17,5 +17,8 @@
   "devDependencies": {
     "wangct-babel": "^1.0.7",
     "@babel/runtime": "^7.4.5"
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "^7.5.2"
   }
 }
