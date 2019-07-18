@@ -1,6 +1,8 @@
-import * as stringUtil from './stringUtil';
 import * as objectUtil from './objectUtil';
-import {isFunc,isBoolean,isObject,isArray,isUndef,isDef} from "./typeUtil";
+import {isFunc, isBoolean, isObject, isArray, isUndef, isDef, isString} from "./typeUtil";
+import {compact} from "./arrayUtil";
+import {stringify, strParse} from "./stringUtil";
+import {toPromise} from "./promiseUtil";
 
 export * from './typeUtil';
 
@@ -19,8 +21,13 @@ export function equal(self,other) {
     }
 }
 
-export function queue(option){
-    return new Queue(option);
+export function onceQueue(options){
+    return new Promise((cb) => {
+        new Queue({
+            ...options,
+            success:cb
+        })
+    })
 }
 
 /**
@@ -28,156 +35,137 @@ export function queue(option){
  * @param opt       配置项有：       list execFunc limit success
  * @constructor
  */
-class Queue {
-    state = {
+export class Queue {
+    config = {
         limit: 1,
         interval: 10,
-        runCount: 0,
         list: [],
         result: [],
     };
 
-    constructor(option) {
-        this.init(option);
-    }
+    runCount = 0;
+    sucResult = [];
+    errResult = [];
 
-    init(option){
-        this.setProps(option);
+    constructor(options) {
+        this.setConfig(options);
         this.start();
     }
 
-    setProps(option) {
-        this.props = {
-            ...this.state,
-            ...option
+    setConfig(config) {
+        this.config = {
+            ...this.config,
+            ...config
         };
     }
 
-    updateProps(option){
-        this.setProps({
-            ...this.getProps(),
-            ...option
-        });
-    }
-
-    getProps(){
-        return this.props;
+    getConfig(){
+        return this.config;
     }
 
     start() {
-        const {runCount, limit} = this.getProps();
-        new Array(limit - runCount).fill().forEach(() => {
-            this.props.runCount++;
-            this.exec();
+        const {limit} = this.getConfig();
+        loop(Math.max(limit - this.runCount,0),() => {
+            setTimeout(() => {
+                this.execItem();
+            },0);
         });
+        this.runCount = limit;
     }
 
-    exec() {
-        const props = this.getProps();
-        const {getItem, func, success, result} = props;
-        const item = isFunc(getItem) ? getItem.call(this) : props.list.shift();
+    execItem() {
+        const config = this.getConfig();
+        const {getItem} = config;
+        const item = isFunc(getItem) ? getItem.call(this) : config.list.shift();
         if (isUndef(item)) {
-            let {runCount} = props;
-            runCount--;
-            this.updateProps({runCount});
-            if (runCount === 0) {
-                callFunc(success,result);
+            this.runCount--;
+            if (this.runCount === 0) {
+                callFunc(config.success,this.sucResult,this.errResult,this);
+                this.sucResult = [];
+                this.errResult = [];
             }
         } else {
-            func(item, (data) => {
-                const props = this.getProps();
-                props.result.push(data);
+            const pro = toPromise(callFunc.call(this,config.func,item));
+            pro.finally(() => {
                 setTimeout(() => {
-                    this.exec();
-                }, props.interval);
-            });
+                    this.execItem();
+                }, config.interval);
+            })
+              .then(data => this.sucResult.push(data))
+              .catch(err => this.errResult.push(err));
         }
     }
 }
 
-export function cache(options){
-    return new CacheData(options);
-}
-
-class CacheData{
-    state = {
-        limit:100
+export class Cache{
+    config = {
+        limit:1000
     };
 
-    cache = {};
+    data = {};
 
-    constructor(option){
-        this.init(option);
-    }
-
-    init(option){
-        this.setProps(option);
-    }
-
-    setProps(option){
-        this.props = {
-            ...this.state,
-            ...option
-        };
-    }
-
-    getProps(){
-        return this.props;
-    }
-
-    getCache(){
-        return this.cache;
-    }
-
-    setCache(key,value){
-        const cache = this.getCache();
-        cache[key] = {
+    static newItem(key,value){
+        return {
             key,
             value,
             time:+new Date()
+        }
+    }
+
+    constructor(options){
+        this.setConfig(options);
+    }
+
+    setConfig(config){
+        this.config = {
+            ...this.config,
+            ...config
         };
     }
 
+    getConfig(){
+        return this.config;
+    }
+
     check(){
-        const cache = this.getCache();
-        const keys = Object.keys(cache);
-        if(keys.length > this.getProps().limit){
-            const deleteKey = keys.sort((a,b) => cache[a].time - cache[b].time)[0];
-            delete cache[deleteKey];
+        const {data} = this;
+        const keys = Object.keys(data);
+        if(keys.length > this.getConfig().limit){
+            const deleteKey = keys.sort((a,b) => data[a].time - data[b].time)[0];
+            delete data[deleteKey];
         }
     }
 
     getItem(key){
-        const cache = this.getCache();
-        const item = cache[key];
+        const item = this.data[key];
         return item && item.value;
     }
 
     setItem(key,value){
-        this.setCache(key,value);
+        this.data[key] = Cache.newItem(key,value);
         this.check();
         return this;
     }
 }
 
 
-export function classNames(){
-    return Array.from(arguments).filter(item => !!item).join(' ');
+export function classNames(...args){
+    return args.filter(item => isString(item)).join(' ');
 }
 
 export function getQsParams(){
-    return stringUtil.strParse(window.location.search.substr(1));
+    return strParse(window.location.search.substr(1));
 }
 
 export function getQsString(params,originParams = {}){
-    return stringUtil.stringify({...originParams, ...params});
+    return stringify({...originParams, ...params});
 }
 
 export function cookie(key,value,options = {}){
     if(isDef(value)){
-        window.document.cookie = key + '=' + value + ';' + stringUtil.stringify(options,'=',';');
+        window.document.cookie = key + '=' + value + ';' + stringify(options,'=',';');
     }else{
-        const cookie = stringUtil.strParse(window.document.cookie,'=',';');
+        const cookie = strParse(window.document.cookie,'=',';');
         return isDef(key) ? cookie[key] : cookie;
     }
 }
@@ -186,35 +174,26 @@ export function cloneFunc(v){
     return new Function('return ' + v.toString())()
 }
 
-export function extend(){
-    const args = Array.from(arguments);
-    let deep = false;
-    let index = 1;
-    let target = args[0];
-    if(isBoolean(target)){
-        deep = target;
-        target = args[1];
-        index = 2;
+export function extend(deep,...args){
+    if(!isBoolean(deep)){
+        args.unshift(deep);
+        deep = false;
     }
-    target = target || {};
-    for(;index < args.length;index++){
-        const extTarget = args[index];
-        if(isDef(extTarget)){
-            Object.keys(extTarget).forEach(key => {
-                let value = extTarget[key];
-                if(deep){
-                    if(isFunc(value)){
-                        value = cloneFunc(value);
-                    }else if(isObject(value)){
-                        value = extend(deep,{},value);
-                    }else if(isArray(value)){
-                        value = extend(deep,[],value);
-                    }
+    const target = args[0];
+    compact(args.slice(1)).forEach(item => {
+        objectUtil.forEach(item,(value,key) => {
+            if(deep){
+                if(isFunc(value)){
+                    value = cloneFunc(value);
+                }else if(isObject(value)){
+                    value = extend(deep,{},value);
+                }else if(isArray(value)){
+                    value = extend(deep,[],value);
                 }
-                target[key] = value;
-            })
-        }
-    }
+            }
+            target[key] = value;
+        })
+    });
     return target;
 }
 
@@ -256,7 +235,7 @@ function initRandomChars(){
 
 export function loop(count = 0,func){
     new Array(count).fill(true).forEach((item,i) => {
-        func(i);
+        callFunc(func,i);
     })
 }
 

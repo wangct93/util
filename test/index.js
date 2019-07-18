@@ -3,4 +3,10 @@ const util = require('../lib');
 
 
 
-console.log(util);
+
+const cache = new util.Cache();
+
+
+cache.setItem('key','wangct');
+
+console.log(cache.getItem('key'),cache);
