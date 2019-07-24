@@ -239,4 +239,6 @@ export function loop(count = 0,func){
     })
 }
 
-
+export function pathJoin(...args){
+    return args.join('/').replace(/\/+/g,'/');
+}
