@@ -33,9 +33,9 @@ export function every(obj,func){
 }
 
 export function find(obj,func){
-  return Object.keys(obj).find(key => func(obj[key],key,obj));
+  return obj[findKey(obj,func)];
 }
 
 export function findKey(obj,func){
-  return Object.keys(obj).findIndex(key => func(obj[key],key,obj));
+  return Object.keys(obj).find(key => func(obj[key],key,obj));
 }

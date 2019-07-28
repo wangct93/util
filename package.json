@@ -1,6 +1,6 @@
 {
   "name": "wangct-util",
-  "version": "1.0.47",
+  "version": "1.0.49",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
