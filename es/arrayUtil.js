@@ -2,7 +2,7 @@ import {isFunc,isArray,isDef} from './typeUtil';
 import {validateArray} from "./validateUtil";
 
 export function toArray(ary){
-    return isArray(ary) ? ary : isDef(ary) ? [ary] : []
+    return isArray(ary) ? ary : isDef(ary) ? [ary] : [];
 }
 
 export function aryToObject(ary, key, valueFunc){
@@ -59,29 +59,29 @@ export function compact(ary){
     return ary.filter(item => isDef(item))
 }
 
-export function findChild(ary,func,childrenField = 'children'){
+export function findChild(ary,func,childrenField = 'children',parent = null){
     validateArray(ary);
     func = formatFunc(func,item => item === func);
     for(let i = 0;i < ary.length;i++){
         const item = ary[i];
-        if(func(item)){
+        if(func(item,parent)){
             return item;
         }
         const children = item[childrenField] || [];
-        const childrenResult = children.length && findChild(children,func,childrenField);
-        if(childrenResult){
+        const childrenResult = children.length && findChild(children,func,childrenField,item);
+if(childrenResult){
             return childrenResult;
         }
     }
 }
 
-export function findChildren(ary,func,childrenField = 'children'){
+export function findChildren(ary,func,childrenField = 'children',parent = null){
     validateArray(ary);
     func = formatFunc(func,item => item === func);
     return ary.map(item => {
-        const list = func(item) ? [item] : [];
+        const list = func(item,parent) ? [item] : [];
         const children = item[childrenField] || [];
-        const childrenResult = children.length && findChildren(children,func,childrenField);
+        const childrenResult = children.length && findChildren(children,func,childrenField,item);
         return childrenResult ? list.concat(childrenResult) : list;
     }).reduce((pv,item) => pv.concat(item),[]);
 }

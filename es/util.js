@@ -201,8 +201,6 @@ export function scroll(num){
     window.document.documentElement.scrollTop = num;
 }
 
-
-
 const randomChars = [];
 initRandomChars();
 
@@ -241,4 +239,8 @@ export function loop(count = 0,func){
 
 export function pathJoin(...args){
     return args.join('/').replace(/\/+/g,'/');
+}
+
+export function defineValue(value,replaceValue){
+    return isDef(value) ? value : replaceValue;
 }
