@@ -1,8 +1,8 @@
-import * as objectUtil from './objectUtil';
 import {isFunc, isBoolean, isObject, isArray, isUndef, isDef, isString} from "./typeUtil";
-import {compact} from "./arrayUtil";
+import {aryCompact} from "./arrayUtil";
 import {stringify, strParse} from "./stringUtil";
 import {toPromise} from "./promiseUtil";
+import {objForEach} from "./objectUtil";
 
 export * from './typeUtil';
 
@@ -180,8 +180,8 @@ export function extend(deep,...args){
         deep = false;
     }
     const target = args[0];
-    compact(args.slice(1)).forEach(item => {
-        objectUtil.forEach(item,(value,key) => {
+    aryCompact(args.slice(1)).forEach(item => {
+        objForEach(item,(value,key) => {
             if(deep){
                 if(isFunc(value)){
                     value = cloneFunc(value);
@@ -221,7 +221,7 @@ function initRandomChars(){
         '0':10,
         'aA':26,
     };
-    objectUtil.forEach(temp,(value,key) => {
+    objForEach(temp,(value,key) => {
         key.split('').forEach(char => {
             const baseCode = char.charCodeAt(0);
             new Array(value).fill(0).forEach((v,i) => {
@@ -243,4 +243,8 @@ export function pathJoin(...args){
 
 export function defineValue(value,replaceValue){
     return isDef(value) ? value : replaceValue;
+}
+
+export function strEqual(first,second){
+    return first + '' === second + '';
 }

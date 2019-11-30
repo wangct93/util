@@ -5,6 +5,14 @@ export function toArray(ary){
     return isArray(ary) ? ary : isDef(ary) ? [ary] : [];
 }
 
+export function toAry(ary){
+    return toArray(ary);
+}
+
+export function aryToObj(...args){
+    return aryToObject(...args);
+}
+
 export function aryToObject(ary, key, valueFunc){
     validateArray(ary);
     const result = {};
@@ -34,7 +42,7 @@ export function aryRemove(ary, func){
     }
 }
 
-export function classify(ary,keyFunc = 'type',valueFunc){
+export function aryClassify(ary,keyFunc = 'type',valueFunc){
     validateArray(ary);
     const result = {};
     keyFunc = formatFunc(keyFunc,item => item[keyFunc]);
@@ -49,17 +57,22 @@ export function classify(ary,keyFunc = 'type',valueFunc){
     return result;
 }
 
-export function noRepeat(ary){
+export function aryNoRepeat(ary){
     validateArray(ary);
     return Array.from(new Set(ary));
 }
 
-export function compact(ary){
+export function aryCompact(ary){
     validateArray(ary);
-    return ary.filter(item => isDef(item))
+    return ary.filter(item => isDef(item));
 }
 
-export function findChild(ary,func,childrenField = 'children',parent = null){
+export function aryFilterEmpty(ary){
+    validateArray(ary);
+    return ary.filter(item => !!item);
+}
+
+export function aryFindChild(ary,func,childrenField = 'children',parent = null){
     validateArray(ary);
     func = formatFunc(func,item => item === func);
     for(let i = 0;i < ary.length;i++){
@@ -68,20 +81,20 @@ export function findChild(ary,func,childrenField = 'children',parent = null){
             return item;
         }
         const children = item[childrenField] || [];
-        const childrenResult = children.length && findChild(children,func,childrenField,item);
+        const childrenResult = children.length && aryFindChild(children,func,childrenField,item);
 if(childrenResult){
             return childrenResult;
         }
     }
 }
 
-export function findChildren(ary,func,childrenField = 'children',parent = null){
+export function aryFindChildren(ary,func,childrenField = 'children',parent = null){
     validateArray(ary);
     func = formatFunc(func,item => item === func);
     return ary.map(item => {
         const list = func(item,parent) ? [item] : [];
         const children = item[childrenField] || [];
-        const childrenResult = children.length && findChildren(children,func,childrenField,item);
+        const childrenResult = children.length && aryFindChildren(children,func,childrenField,item);
         return childrenResult ? list.concat(childrenResult) : list;
     }).reduce((pv,item) => pv.concat(item),[]);
 }

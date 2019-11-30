@@ -21,16 +21,32 @@ export function isArray(v){
   return _getType(v) === '[object Array]';
 }
 
+export function isAry(v){
+  return isArray(v);
+}
+
 export function isBoolean(v){
   return _getType(v) === '[object Boolean]';
+}
+
+export function isBol(v){
+  return isBoolean(v);
 }
 
 export function isObject(v){
   return _getType(v) === '[object Object]';
 }
 
+export function isObj(v){
+  return isObject(v);
+}
+
 export function isString(v){
   return _getType(v) === '[object String]';
+}
+
+export function isStr(v){
+  return isString(v);
 }
 
 export function isDate(v){
