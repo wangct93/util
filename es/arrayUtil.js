@@ -1,29 +1,55 @@
-import {isFunc,isArray,isDef} from './typeUtil';
+import {isFunc,isAry,isDef} from './typeUtil';
 import {validateArray} from "./validateUtil";
+import {defineFunc} from "./defineUtil";
 
+/**
+ * 转化为数组
+ * @param ary
+ * @returns {*}
+ */
 export function toArray(ary){
-    return isArray(ary) ? ary : isDef(ary) ? [ary] : [];
+    return isAry(ary) ? ary : isDef(ary) ? [ary] : [];
 }
 
+/**
+ * 转化为数组
+ * @param ary
+ * @returns {*}
+ */
 export function toAry(ary){
     return toArray(ary);
 }
 
+/**
+ * 数组转对象
+ * @param args
+ */
 export function aryToObj(...args){
     return aryToObject(...args);
 }
 
+/**
+ * 数组转对象
+ * @param ary
+ * @param key
+ * @param valueFunc
+ */
 export function aryToObject(ary, key, valueFunc){
     validateArray(ary);
     const result = {};
-    const keyFunc = formatFunc(key,item => item[key]);
-    valueFunc = formatFunc(valueFunc,item => item);
+    const keyFunc = defineFunc(key,item => item[key]);
+    valueFunc = defineFunc(valueFunc,item => item);
     ary.forEach((item, i) => {
         result[keyFunc(item,i,ary)] = valueFunc(item,i,ary);
     });
     return result;
 }
 
+/**
+ * 数组删除元素
+ * @param ary
+ * @param func
+ */
 export function aryRemove(ary, func){
     validateArray(ary);
     if(isFunc(func)){
@@ -42,11 +68,17 @@ export function aryRemove(ary, func){
     }
 }
 
+/**
+ * 数组分类
+ * @param ary
+ * @param keyFunc
+ * @param valueFunc
+ */
 export function aryClassify(ary,keyFunc = 'type',valueFunc){
     validateArray(ary);
     const result = {};
-    keyFunc = formatFunc(keyFunc,item => item[keyFunc]);
-    valueFunc = formatFunc(valueFunc,item => item);
+    keyFunc = defineFunc(keyFunc,item => item[keyFunc]);
+    valueFunc = defineFunc(valueFunc,item => item);
     ary.forEach((item, i) => {
         const key = keyFunc(item,i,ary);
         const value = valueFunc(item,i,ary);
@@ -57,24 +89,49 @@ export function aryClassify(ary,keyFunc = 'type',valueFunc){
     return result;
 }
 
-export function aryNoRepeat(ary){
+/**
+ * 删除重复项
+ * @param ary
+ * @param fn
+ * @returns {any[]}
+ */
+export function aryRemoveRepeat(ary,fn){
     validateArray(ary);
-    return Array.from(new Set(ary));
+    if(!fn){
+        return Array.from(new Set(ary));
+    }
+    const temp = [];
+    return ary.filter((item,index) => {
+        const value = fn(item,index,ary);
+        if(temp.includes(value)){
+            return false;
+        }
+        temp.push(value);
+        return true;
+    });
 }
 
-export function aryCompact(ary){
+/**
+ * 过滤空值
+ * @param ary
+ * @returns {*}
+ */
+export function aryFilterDef(ary){
     validateArray(ary);
     return ary.filter(item => isDef(item));
 }
 
-export function aryFilterEmpty(ary){
-    validateArray(ary);
-    return ary.filter(item => !!item);
-}
-
+/**
+ * 找到指定节点
+ * @param ary
+ * @param func
+ * @param childrenField
+ * @param parent
+ * @returns {number | * | undefined|*}
+ */
 export function aryFindChild(ary,func,childrenField = 'children',parent = null){
     validateArray(ary);
-    func = formatFunc(func,item => item === func);
+    func = defineFunc(func,item => item === func);
     for(let i = 0;i < ary.length;i++){
         const item = ary[i];
         if(func(item,parent)){
@@ -88,17 +145,21 @@ if(childrenResult){
     }
 }
 
+/**
+ * 寻找所有匹配子节点
+ * @param ary
+ * @param func
+ * @param childrenField
+ * @param parent
+ * @returns {Array}
+ */
 export function aryFindChildren(ary,func,childrenField = 'children',parent = null){
     validateArray(ary);
-    func = formatFunc(func,item => item === func);
+    func = defineFunc(func,item => item === func);
     return ary.map(item => {
         const list = func(item,parent) ? [item] : [];
         const children = item[childrenField] || [];
         const childrenResult = children.length && aryFindChildren(children,func,childrenField,item);
         return childrenResult ? list.concat(childrenResult) : list;
     }).reduce((pv,item) => pv.concat(item),[]);
-}
-
-function formatFunc(func,defaultFunc){
-    return isFunc(func) ? func : defaultFunc;
 }

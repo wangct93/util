@@ -1,20 +1,19 @@
+import {defineValue} from "./defineUtil";
 
-export function toString(str){
-  return str ? str + '' : '';
+/**
+ * 转化为字符串
+ * @param str
+ * @returns {string}
+ */
+export function toStr(str){
+  return defineValue(str,'') + '';
 }
 
-export function strDiff(self = '',other = ''){
-  const len = Math.max(self.length,other.length);
-  let selfNum = 0;
-  let otherNum = 0;
-  const n = 4;
-  new Array(len).fill().forEach((m,i) => {
-    selfNum += self[i] ? self.charCodeAt(i) / (100 ** (i - n)) : 0;
-    otherNum += other[i] ? other.charCodeAt(i) / (100 ** (i - n)) : 0;
-  });
-  return selfNum - otherNum;
-}
-
+/**
+ * 解析html字符串
+ * @param str
+ * @returns {string}
+ */
 export function decodeHtml(str = ''){
   const config = {
     amp: '&',
@@ -72,6 +71,12 @@ export function decodeHtml(str = ''){
   return newStr === str ? newStr : decodeHtml(newStr);
 }
 
+/**
+ * 字符串解析
+ * @param str
+ * @param equalSep
+ * @param linkSep
+ */
 export function strParse(str = '',equalSep = '=',linkSep = '&'){
   const result = {};
   str.split(linkSep).forEach(item => {
@@ -83,6 +88,13 @@ export function strParse(str = '',equalSep = '=',linkSep = '&'){
   return result;
 }
 
+/**
+ * 对象字符串
+ * @param data
+ * @param equalSep
+ * @param linkSep
+ * @returns {string}
+ */
 export function stringify(data,equalSep = '=',linkSep = '&'){
   return Object.keys(data).filter(key => data[key] !== undefined).map(key => `${key}${equalSep}${data[key]}`).join(linkSep);
 }

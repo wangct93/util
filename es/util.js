@@ -1,17 +1,27 @@
-import {isFunc, isBoolean, isObject, isArray, isUndef, isDef, isString} from "./typeUtil";
-import {aryCompact} from "./arrayUtil";
+import {isFunc, isBol, isObj, isAry, isUndef, isDef, isStr} from "./typeUtil";
+import {aryFilterDef} from "./arrayUtil";
 import {stringify, strParse} from "./stringUtil";
 import {toPromise} from "./promiseUtil";
 import {objForEach} from "./objectUtil";
 
-export * from './typeUtil';
-
+/**
+ * 调用函数，过滤错误
+ * @param func
+ * @param ary
+ * @returns {*}
+ */
 export function callFunc(func,...ary) {
     if (isFunc(func)) {
         return func.call(this, ...ary);
     }
 }
 
+/**
+ * 判断对象值相等
+ * @param self
+ * @param other
+ * @returns {boolean}
+ */
 export function equal(self,other) {
     if (typeof self === 'object' && typeof other === 'object' && isDef(self) && isDef(other)) {
         const keys = Object.keys(self);
@@ -21,6 +31,11 @@ export function equal(self,other) {
     }
 }
 
+/**
+ * 一次队列
+ * @param options
+ * @returns {Promise<any>}
+ */
 export function onceQueue(options){
     return new Promise((cb) => {
         new Queue({
@@ -97,6 +112,9 @@ export class Queue {
     }
 }
 
+/**
+ * 缓存
+ */
 export class Cache{
     config = {
         limit:1000
@@ -148,19 +166,38 @@ export class Cache{
     }
 }
 
-
+/**
+ * 合并class名称
+ * @param args
+ * @returns {string}
+ */
 export function classNames(...args){
-    return args.filter(item => isString(item)).join(' ');
+    return args.filter(item => isStr(item)).join(' ');
 }
 
+/**
+ * 获取地址参数（对象格式）
+ */
 export function getQsParams(){
     return strParse(window.location.search.substr(1));
 }
 
+/**
+ * 转化参数为地址参数
+ * @param params
+ * @param originParams
+ */
 export function getQsString(params,originParams = {}){
     return stringify({...originParams, ...params});
 }
 
+/**
+ * cookie操作
+ * @param key
+ * @param value
+ * @param options
+ * @returns {*}
+ */
 export function cookie(key,value,options = {}){
     if(isDef(value)){
         window.document.cookie = key + '=' + value + ';' + stringify(options,'=',';');
@@ -170,24 +207,35 @@ export function cookie(key,value,options = {}){
     }
 }
 
+/**
+ * 克隆方法
+ * @param v
+ * @returns {never}
+ */
 export function cloneFunc(v){
-    return new Function('return ' + v.toString())()
+    return new Function('return ' + v.toString())();
 }
 
+/**
+ * 继承
+ * @param deep
+ * @param args
+ * @returns {*}
+ */
 export function extend(deep,...args){
-    if(!isBoolean(deep)){
+    if(!isBol(deep)){
         args.unshift(deep);
         deep = false;
     }
     const target = args[0];
-    aryCompact(args.slice(1)).forEach(item => {
+    aryFilterDef(args.slice(1)).forEach(item => {
         objForEach(item,(value,key) => {
             if(deep){
                 if(isFunc(value)){
                     value = cloneFunc(value);
-                }else if(isObject(value)){
+                }else if(isObj(value)){
                     value = extend(deep,{},value);
-                }else if(isArray(value)){
+                }else if(isAry(value)){
                     value = extend(deep,[],value);
                 }
             }
@@ -197,6 +245,10 @@ export function extend(deep,...args){
     return target;
 }
 
+/**
+ * 界面滚动高度
+ * @param num
+ */
 export function scroll(num){
     window.document.documentElement.scrollTop = num;
 }
@@ -204,6 +256,11 @@ export function scroll(num){
 const randomChars = [];
 initRandomChars();
 
+/**
+ * 获取随机字符串
+ * @param length
+ * @returns {string}
+ */
 export function random(length){
     if(isUndef(length)){
         return parseInt(+Math.random().toString().substr(3) + +new Date()).toString(36);
@@ -211,11 +268,18 @@ export function random(length){
     return new Array(length).fill(0).map(() => getRandomChar()).join('');
 }
 
+/**
+ * 获取随机字符
+ * @returns {*}
+ */
 function getRandomChar(){
     return randomChars[Math.floor(Math.random() * randomChars.length)];
 }
 
 
+/**
+ * 初始化随机字符串
+ */
 function initRandomChars(){
     const temp = {
         '0':10,
@@ -231,20 +295,48 @@ function initRandomChars(){
     });
 }
 
+/**
+ * 循环次数
+ * @param count
+ * @param func
+ */
 export function loop(count = 0,func){
     new Array(count).fill(true).forEach((item,i) => {
         callFunc(func,i);
     })
 }
 
+/**
+ * 路径合并
+ * @param args
+ * @returns {string}
+ */
 export function pathJoin(...args){
     return args.join('/').replace(/\/+/g,'/');
 }
 
-export function defineValue(value,replaceValue){
-    return isDef(value) ? value : replaceValue;
-}
-
+/**
+ * 字符串对等比较
+ * @param first
+ * @param second
+ * @returns {boolean}
+ */
 export function strEqual(first,second){
     return first + '' === second + '';
+}
+
+/**
+ * 捕捉错误
+ * @param fn
+ * @returns {Promise<void>}
+ */
+export function catchError(fn){
+    return new Promise((cb,eb) => {
+        try{
+            fn();
+            cb();
+        }catch(e){
+            eb(e);
+        }
+    });
 }

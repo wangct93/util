@@ -1,6 +1,11 @@
 
-import {isFunc, isArray, isObject, isString, isNum, isDef, isRegExp} from "./typeUtil";
+import {isFunc, isAry, isObj, isStr, isNum, isDef, isRegExp, isDate, isPromise} from "./typeUtil";
 
+/**
+ * 校验变量格式
+ * @param func
+ * @param message
+ */
 export function validate(func,message = '数据格式不对'){
   const isValid = isFunc(func) ? func() : func;
   if(!isValid){
@@ -8,8 +13,13 @@ export function validate(func,message = '数据格式不对'){
   }
 }
 
+/**
+ * 校验日期对象
+ * @param data
+ * @param message
+ */
 export function validateDate(data,message = '格式要求：日期对象'){
-  validate(isDef(data),message);
+  validate(isDate(data),message);
 }
 
 export function validateDef(data,message = '格式要求：不为null或者undefined'){
@@ -21,15 +31,15 @@ export function validatePromise(data,message = '格式要求：Promise对象'){
 }
 
 export function validateArray(data,message = '格式要求：数组'){
-  validate(isArray(data),message);
+  validate(isAry(data),message);
 }
 
 export function validateObject(data,message = '格式要求：对象'){
-  validate(isObject(data),message);
+  validate(isObj(data),message);
 }
 
 export function validateString(data,message = '格式要求：字符串'){
-  validate(isString(data),message);
+  validate(isStr(data),message);
 }
 
 export function validateNumber(data,message = '格式要求：数字'){

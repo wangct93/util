@@ -6,7 +6,8 @@
   "scripts": {
     "babel": "node babel",
     "publish": "npm pu --registry https://registry.npmjs.org/",
-    "test": "node test"
+    "test": "node test",
+    "unitTest": "node unitTest"
   },
   "author": "",
   "license": "ISC",
