@@ -1,7 +1,7 @@
 
-exports.aryRemoveRepeat = [
-  {
-    i:[['1','2','3','1']],
-    o:['1','2','3'],
-  },
-];
+module.exports = {
+  isFunc:{
+    i:async () => {},
+    o:true,
+  }
+};

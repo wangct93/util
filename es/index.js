@@ -8,6 +8,7 @@ export * from './promiseUtil';
 export * from './util';
 export * from './validateUtil';
 export * from './defineUtil';
+export * from './typeUtil';
 import * as util from './util';
 import * as dateUtil from './dateUtil';
 import * as stringUtil from './stringUtil';
@@ -18,6 +19,7 @@ import * as reactUtil from './reactUtil';
 import * as promiseUtil from './promiseUtil';
 import * as validateUtil from './validateUtil';
 import * as defineUtil from './defineUtil';
+import * as typeUtil from './typeUtil';
 
 export default {
   ...util,
@@ -30,4 +32,5 @@ export default {
   ...promiseUtil,
   ...validateUtil,
   ...defineUtil,
+  ...typeUtil,
 };
