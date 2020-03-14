@@ -17,5 +17,5 @@ export function defineFunc(func,defaultFunc){
  * @returns {*}
  */
 export function defineValue(value,defaultValue){
-  return isDef(func) ? value : defaultValue;
+  return isDef(value) ? value : defaultValue;
 }

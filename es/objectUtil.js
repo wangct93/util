@@ -28,7 +28,7 @@ export function objForEach(obj,func){
  * @param keys
  * @returns {{}}
  */
-export function objClone(obj = {},keys = []){
+export function objClone(obj = {},keys = Object.keys(obj)){
   return aryToObject(keys,item => item,item => obj[item]);
 }
 
@@ -39,7 +39,11 @@ export function objClone(obj = {},keys = []){
  * @returns {*}
  */
 export function objFilter(obj,func){
-  return clone(obj,Object.keys(obj).filter((key) => func(obj[key],key,obj)));
+  const keys = Object.keys(obj);
+  const filterKeys = keys.filter((key) => {
+    return func(obj[key],key,obj);
+  });
+  return objClone(obj,filterKeys);
 }
 
 /**
