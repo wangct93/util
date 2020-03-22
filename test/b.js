@@ -3,12 +3,10 @@
  */
 
 
-import a from './index';
+const http = require('http');
 
-
-export default 'wangct';
-
-setTimeout(() => {
-  console.log(a);
-},1000);
-console.log(a);
+http.createServer((req,res) => {
+  res.end('wangct');
+}).listen(8888,() => {
+  console.log('started on 8888');
+})

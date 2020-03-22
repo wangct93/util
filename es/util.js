@@ -3,6 +3,7 @@ import {aryFilterDef} from "./arrayUtil";
 import {stringify, strParse} from "./stringUtil";
 import {toPromise} from "./promiseUtil";
 import {objForEach} from "./objectUtil";
+import {Fields} from "./options";
 
 /**
  * 调用函数，过滤错误
@@ -253,9 +254,6 @@ export function scroll(num){
     window.document.documentElement.scrollTop = num;
 }
 
-const randomChars = [];
-initRandomChars();
-
 /**
  * 获取随机字符串
  * @param length
@@ -263,9 +261,10 @@ initRandomChars();
  */
 export function random(length){
     if(isUndef(length)){
-        return parseInt(+Math.random().toString().substr(3) + +new Date()).toString(36);
+        const preStr = Math.random().toString().substr(3);
+        return parseInt(preStr).toString(36);
     }
-    return new Array(length).fill(0).map(() => getRandomChar()).join('');
+    return loop(length,() => getRandomChar()).join('');
 }
 
 /**
@@ -273,26 +272,33 @@ export function random(length){
  * @returns {*}
  */
 function getRandomChar(){
-    return randomChars[Math.floor(Math.random() * randomChars.length)];
+    const chars = getRandomChars();
+    return chars[Math.floor(Math.random() * chars.length)];
 }
 
 
 /**
- * 初始化随机字符串
+ * 获取随机字符串列表
  */
-function initRandomChars(){
-    const temp = {
-        '0':10,
-        'aA':26,
-    };
-    objForEach(temp,(value,key) => {
-        key.split('').forEach(char => {
-            const baseCode = char.charCodeAt(0);
-            new Array(value).fill(0).forEach((v,i) => {
-                randomChars.push(String.fromCharCode(baseCode + i));
+function getRandomChars(){
+    let chars = getConfig(Fields.random);
+    if(!chars){
+        chars = [];
+        const mapData = {
+            '0':10,
+            'aA':26,
+        };
+        objForEach(mapData,(value,key) => {
+            key.split('').forEach(char => {
+                const baseCode = char.charCodeAt(0);
+                loop(value,(item,index) => {
+                    chars.push(String.fromCharCode(baseCode + index));
+                });
             });
         });
-    });
+        setConfig(Fields.random,chars);
+    }
+    return chars;
 }
 
 /**
@@ -301,9 +307,9 @@ function initRandomChars(){
  * @param func
  */
 export function loop(count = 0,func){
-    new Array(count).fill(true).forEach((item,i) => {
-        callFunc(func,i);
-    })
+    return new Array(count).fill(true).map((item,i) => {
+        return callFunc(func,i);
+    });
 }
 
 /**
@@ -327,16 +333,66 @@ export function strEqual(first,second){
 
 /**
  * 捕捉错误
- * @param fn
- * @returns {Promise<void>}
+ * @param func
+ * @param defaultValue
+ * @returns {*}
  */
-export function catchError(fn){
-    return new Promise((cb,eb) => {
-        try{
-            fn();
-            cb();
-        }catch(e){
-            eb(e);
-        }
-    });
+export function catchError(func,defaultValue){
+    let result = defaultValue;
+    try{
+        result = func();
+    }catch(e){
+        console.error('已捕捉：',e);
+        console.log('使用默认值：',defaultValue);
+    }
+    return result;
+}
+
+let _config = {};
+
+/**
+ * 设置配置
+ * @param key
+ * @param value
+ */
+export function setConfig(key,value){
+  if(isUndef(value)){
+      _config = key;
+  }else{
+      _config[key] = value;
+  }
+}
+
+/**
+ * 获取配置
+ * @param key
+ * @returns {*}
+ */
+export function getConfig(key){
+  return isUndef(key) ? _config : _config[key];
+}
+
+/**
+ * 只调用一次方法
+ * @param type
+ * @param func
+ * @returns {*}
+ */
+export function once(type,func){
+    let data = getConfig(type);
+    if(!data){
+        data = {
+           value:func(),
+        };
+        setConfig(type,data);
+    }
+    return data.value;
+}
+
+/**
+ * 清除一次调用的缓存
+ * @param type
+ */
+export function clearOnce(type){
+  setConfig(type,null);
 }

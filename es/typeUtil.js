@@ -126,6 +126,15 @@ export function isUndef (v) {
 }
 
 /**
+ * 判断是否未定义或者null
+ * @param v
+ * @returns {boolean}
+ */
+export function isUndefNull(v){
+  return isUndef(v) || isNull(v);
+}
+
+/**
  * 判断是否为定义变量
  * @param v
  * @returns {boolean}

@@ -14,16 +14,18 @@ export function toPromise(promise,...args){
 /**
  * promise解析
  * @param target
- * @returns {Promise<any[]>|Promise<any>|Promise<{} | [any, any, any, any, any, any, any, any, any, any]>}
+ * @returns {Promise<unknown[]>|Promise<{}>|Promise<any>}
  */
 export function proParse(target){
   if(isAry(target)){
     return Promise.all(target.map(item => toPromise(item)));
-  }else if(isObj(target)){
+  }
+  if(isObj(target)){
     const keys = Object.keys(target);
-    return Promise.all(keys.map(key => target[key])).then(result => {
+    const proList = keys.map(key => toPromise(target[key]));
+    return Promise.all(proList).then(result => {
       return aryToObject(keys,key => key,(key,index) => result[index]);
     });
   }
-  return toPromise(target)
+  return toPromise(target);
 }
