@@ -396,3 +396,21 @@ export function once(type,func){
 export function clearOnce(type){
   setConfig(type,null);
 }
+
+/**
+ * 取消冒泡
+ * @param e
+ * @returns {(() => void) | void}
+ */
+export function stopPropagation(e){
+  return e.stopPropagation && e.stopPropagation();
+}
+
+/**
+ * 取消默认事件
+ * @param e
+ * @returns {(() => void) | void}
+ */
+export function preventDefault(e){
+    return e.preventDefault && e.preventDefault();
+}
