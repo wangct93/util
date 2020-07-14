@@ -130,7 +130,7 @@ export function isUndef (v) {
  * @param v
  * @returns {boolean}
  */
-export function isUndefNull(v){
+export function isEmpty(v){
   return isUndef(v) || isNull(v);
 }
 
@@ -140,7 +140,7 @@ export function isUndefNull(v){
  * @returns {boolean}
  */
 export function isDef (v) {
-  return v !== undefined && v !== null;
+  return !isEmpty();
 }
 
 /**

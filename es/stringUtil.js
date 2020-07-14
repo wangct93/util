@@ -98,3 +98,15 @@ export function strParse(str = '',equalSep = '=',linkSep = '&'){
 export function stringify(data,equalSep = '=',linkSep = '&'){
   return Object.keys(data).filter(key => data[key] !== undefined).map(key => `${key}${equalSep}${data[key]}`).join(linkSep);
 }
+
+/**
+ * 地址栏参数转化
+  * @param params
+ * @returns {string}
+ */
+export function queryString(params){
+  if(params){
+    return stringify(params);
+  }
+  return strParse(window.location.search.substr(1));
+}

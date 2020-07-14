@@ -1,9 +1,9 @@
-import {isFunc, isBol, isObj, isAry, isUndef, isDef, isStr} from "./typeUtil";
+import {isFunc, isBol, isObj, isAry, isUndef, isDef, isStr, isEmpty} from "./typeUtil";
 import {aryFilterDef} from "./arrayUtil";
 import {stringify, strParse} from "./stringUtil";
-import {toPromise} from "./promiseUtil";
 import {objForEach} from "./objectUtil";
 import {Fields} from "./options";
+import {Queue} from "./dataClass";
 
 /**
  * 调用函数，过滤错误
@@ -34,137 +34,20 @@ export function equal(self,other) {
 
 /**
  * 一次队列
+ * @param data
+ * @param func
  * @param options
  * @returns {Promise<any>}
  */
-export function onceQueue(options){
+export function onceQueue(data,func,options){
     return new Promise((cb) => {
         new Queue({
             ...options,
+            data,
+            func,
             success:cb
-        })
-    })
-}
-
-/**
- * 队列执行，根据数组按顺序执行
- * @param opt       配置项有：       list execFunc limit success
- * @constructor
- */
-export class Queue {
-    config = {
-        limit: 1,
-        interval: 10,
-        list: [],
-        result: [],
-    };
-
-    runCount = 0;
-    sucResult = [];
-    errResult = [];
-
-    constructor(options) {
-        this.setConfig(options);
-        this.start();
-    }
-
-    setConfig(config) {
-        this.config = {
-            ...this.config,
-            ...config
-        };
-    }
-
-    getConfig(){
-        return this.config;
-    }
-
-    start() {
-        const {limit} = this.getConfig();
-        loop(Math.max(limit - this.runCount,0),() => {
-            setTimeout(() => {
-                this.execItem();
-            },0);
         });
-        this.runCount = limit;
-    }
-
-    execItem() {
-        const config = this.getConfig();
-        const {getItem} = config;
-        const item = isFunc(getItem) ? getItem.call(this) : config.list.shift();
-        if (isUndef(item)) {
-            this.runCount--;
-            if (this.runCount === 0) {
-                callFunc(config.success,this.sucResult,this.errResult,this);
-                this.sucResult = [];
-                this.errResult = [];
-            }
-        } else {
-            const pro = toPromise(callFunc.call(this,config.func,item));
-            pro.finally(() => {
-                setTimeout(() => {
-                    this.execItem();
-                }, config.interval);
-            })
-              .then(data => this.sucResult.push(data))
-              .catch(err => this.errResult.push(err));
-        }
-    }
-}
-
-/**
- * 缓存
- */
-export class Cache{
-    config = {
-        limit:1000
-    };
-
-    data = {};
-
-    static newItem(key,value){
-        return {
-            key,
-            value,
-            time:+new Date()
-        }
-    }
-
-    constructor(options){
-        this.setConfig(options);
-    }
-
-    setConfig(config){
-        this.config = {
-            ...this.config,
-            ...config
-        };
-    }
-
-    getConfig(){
-        return this.config;
-    }
-
-    check(){
-        const {data} = this;
-        const keys = Object.keys(data);
-        if(keys.length > this.getConfig().limit){
-            const deleteKey = keys.sort((a,b) => data[a].time - data[b].time)[0];
-            delete data[deleteKey];
-        }
-    }
-
-    getItem(key){
-        const item = this.data[key];
-        return item && item.value;
-    }
-
-    setItem(key,value){
-        this.data[key] = Cache.newItem(key,value);
-        this.check();
-        return this;
-    }
+    });
 }
 
 /**
@@ -177,33 +60,17 @@ export function classNames(...args){
 }
 
 /**
- * 获取地址参数（对象格式）
- */
-export function getQsParams(){
-    return strParse(window.location.search.substr(1));
-}
-
-/**
- * 转化参数为地址参数
- * @param params
- * @param originParams
- */
-export function getQsString(params,originParams = {}){
-    return stringify({...originParams, ...params});
-}
-
-/**
  * cookie操作
  * @param key
  * @param value
  * @param options
  * @returns {*}
  */
-export function cookie(key,value,options = {}){
-    if(isDef(value)){
-        window.document.cookie = key + '=' + value + ';' + stringify(options,'=',';');
-    }else{
-        const cookie = strParse(window.document.cookie,'=',';');
+export function cookie(key,value,options = {}) {
+    if (isDef(value)) {
+        window.document.cookie = key + '=' + value + ';' + stringify(options, '=', ';');
+    } else {
+        const cookie = strParse(window.document.cookie, '=', ';');
         return isDef(key) ? cookie[key] : cookie;
     }
 }
@@ -226,7 +93,7 @@ export function cloneFunc(v){
 export function extend(deep,...args){
     if(!isBol(deep)){
         args.unshift(deep);
-        deep = false;
+        deep = true;
     }
     const target = args[0];
     aryFilterDef(args.slice(1)).forEach(item => {
@@ -247,58 +114,49 @@ export function extend(deep,...args){
 }
 
 /**
- * 界面滚动高度
- * @param num
- */
-export function scroll(num){
-    window.document.documentElement.scrollTop = num;
-}
-
-/**
  * 获取随机字符串
  * @param length
  * @returns {string}
  */
 export function random(length){
+    /**
+     * 获取随机字符
+     * @returns {*}
+     */
+    function getRandomChar(){
+        const chars = getRandomChars();
+        return chars[Math.floor(Math.random() * chars.length)];
+    }
+
+
+    /**
+     * 获取随机字符串列表
+     */
+    function getRandomChars(){
+        let chars = cache(Fields.random);
+        if(!chars){
+            chars = [];
+            const mapData = {
+                '0':10,
+                'aA':26,
+            };
+            objForEach(mapData,(value,key) => {
+                key.split('').forEach(char => {
+                    const baseCode = char.charCodeAt(0);
+                    loop(value,(item,index) => {
+                        chars.push(String.fromCharCode(baseCode + index));
+                    });
+                });
+            });
+            cache(Fields.random,chars);
+        }
+        return chars;
+    }
     if(isUndef(length)){
         const preStr = Math.random().toString().substr(3);
         return parseInt(preStr).toString(36);
     }
     return loop(length,() => getRandomChar()).join('');
-}
-
-/**
- * 获取随机字符
- * @returns {*}
- */
-function getRandomChar(){
-    const chars = getRandomChars();
-    return chars[Math.floor(Math.random() * chars.length)];
-}
-
-
-/**
- * 获取随机字符串列表
- */
-function getRandomChars(){
-    let chars = getConfig(Fields.random);
-    if(!chars){
-        chars = [];
-        const mapData = {
-            '0':10,
-            'aA':26,
-        };
-        objForEach(mapData,(value,key) => {
-            key.split('').forEach(char => {
-                const baseCode = char.charCodeAt(0);
-                loop(value,(item,index) => {
-                    chars.push(String.fromCharCode(baseCode + index));
-                });
-            });
-        });
-        setConfig(Fields.random,chars);
-    }
-    return chars;
 }
 
 /**
@@ -348,28 +206,10 @@ export function catchError(func,defaultValue){
     return result;
 }
 
-let _config = {};
+const cacheData = new Cache();
 
-/**
- * 设置配置
- * @param key
- * @param value
- */
-export function setConfig(key,value){
-  if(isUndef(value)){
-      _config = key;
-  }else{
-      _config[key] = value;
-  }
-}
-
-/**
- * 获取配置
- * @param key
- * @returns {*}
- */
-export function getConfig(key){
-  return isUndef(key) ? _config : _config[key];
+function cache(...args){
+    cacheData.data(...args);
 }
 
 /**
@@ -378,15 +218,13 @@ export function getConfig(key){
  * @param func
  * @returns {*}
  */
-export function once(type,func){
-    let data = getConfig(type);
-    if(!data){
-        data = {
-           value:func(),
-        };
-        setConfig(type,data);
+export function onceFunc(type,func){
+    let data = cache(type);
+    if(isEmpty(data)){
+        data = func();
+        cache(type,data);
     }
-    return data.value;
+    return data;
 }
 
 /**
@@ -394,7 +232,7 @@ export function once(type,func){
  * @param type
  */
 export function clearOnce(type){
-  setConfig(type,null);
+    cache(type,null);
 }
 
 /**

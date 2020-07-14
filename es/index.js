@@ -9,6 +9,7 @@ export * from './util';
 export * from './validateUtil';
 export * from './defineUtil';
 export * from './typeUtil';
+export * from './dataClass';
 import * as util from './util';
 import * as dateUtil from './dateUtil';
 import * as stringUtil from './stringUtil';
@@ -20,6 +21,7 @@ import * as promiseUtil from './promiseUtil';
 import * as validateUtil from './validateUtil';
 import * as defineUtil from './defineUtil';
 import * as typeUtil from './typeUtil';
+import * as dataClass from './dataClass';
 
 export default {
   ...util,
@@ -33,4 +35,5 @@ export default {
   ...validateUtil,
   ...defineUtil,
   ...typeUtil,
+  ...dataClass,
 };
