@@ -1,4 +1,3 @@
-export * from './dateUtil';
 export * from './stringUtil';
 export * from './arrayUtil';
 export * from './numberUtil';
@@ -11,7 +10,6 @@ export * from './defineUtil';
 export * from './typeUtil';
 export * from './dataClass';
 import * as util from './util';
-import * as dateUtil from './dateUtil';
 import * as stringUtil from './stringUtil';
 import * as arrayUtil from './arrayUtil';
 import * as numberUtil from './numberUtil';

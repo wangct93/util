@@ -3,7 +3,8 @@ import {aryFilterDef} from "./arrayUtil";
 import {stringify, strParse} from "./stringUtil";
 import {objForEach} from "./objectUtil";
 import {Fields} from "./options";
-import {Queue} from "./dataClass";
+import {Queue,Cache} from "./dataClass";
+import {toNum} from "./numberUtil";
 
 /**
  * 调用函数，过滤错误
@@ -195,7 +196,7 @@ export function strEqual(first,second){
  * @param defaultValue
  * @returns {*}
  */
-export function catchError(func,defaultValue){
+export function catchError(func,defaultValue = ''){
     let result = defaultValue;
     try{
         result = func();
@@ -208,47 +209,63 @@ export function catchError(func,defaultValue){
 
 const cacheData = new Cache();
 
+/**
+ * 缓存方法
+ * @author wangchuitong
+ */
 function cache(...args){
     cacheData.data(...args);
 }
 
 /**
- * 只调用一次方法
- * @param type
+ * 获取只调用一次方法
  * @param func
  * @returns {*}
  */
-export function onceFunc(type,func){
-    let data = cache(type);
-    if(isEmpty(data)){
-        data = func();
-        cache(type,data);
+export function getOnceFunc(func){
+    let flag = false;
+    return (...args) => {
+        if(flag){
+            return;
+        }
+        flag = true;
+        return callFunc(func,...args);
     }
-    return data;
 }
 
 /**
- * 清除一次调用的缓存
- * @param type
+ * 获取节流函数
+ * @author wangchuitong
  */
-export function clearOnce(type){
-    cache(type,null);
+export function getThrottleFunc(func,interval = 1000){
+    let sign = +new Date();
+    return (...args) => {
+        const now = +new Date();
+        if(now - sign > interval){
+            sign = now;
+            return callFunc(func,...args);
+        }
+    }
 }
 
 /**
- * 取消冒泡
- * @param e
- * @returns {(() => void) | void}
+ * 获取防抖函数
+ * @author wangchuitong
  */
-export function stopPropagation(e){
-  return e.stopPropagation && e.stopPropagation();
+export function getShakeProofFunc(func,interval = 1000){
+    let timer = null;
+    return (...args) => {
+        clearInterval(timer);
+        timer = setTimeout(() => {
+            callFunc(func,...args);
+        },interval);
+    }
 }
 
 /**
- * 取消默认事件
- * @param e
- * @returns {(() => void) | void}
+ * 数值精度转换
+ * @author wangchuitong
  */
-export function preventDefault(e){
-    return e.preventDefault && e.preventDefault();
+export function toNumPrecision(num){
+    return toNum(toNum(num).toFixed(12));
 }

@@ -32,6 +32,10 @@ export class BaseData{
   }
 }
 
+/**
+ * 队列类
+ * @author wangchuitong
+ */
 export class Queue extends BaseData{
   constructor(props) {
     super(props);

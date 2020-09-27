@@ -1,5 +1,5 @@
 {
-  "name": "util-store",
+  "name": "t-util",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
@@ -16,10 +16,9 @@
     "README.md"
   ],
   "devDependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "^7.5.2",
     "@babel/runtime": "^7.4.5",
     "wangct-babel": "^1.1.2"
   },
-  "dependencies": {
-    "@babel/plugin-proposal-export-namespace-from": "^7.5.2"
-  }
+  "dependencies": {}
 }
