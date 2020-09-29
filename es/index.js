@@ -23,7 +23,6 @@ import * as dataClass from './dataClass';
 
 export default {
   ...util,
-  ...dateUtil,
   ...stringUtil,
   ...arrayUtil,
   ...numberUtil,
