@@ -1,11 +1,12 @@
 {
-  "name": "t-util",
+  "name": "@wangct/util",
   "version": "1.0.0",
-  "description": "",
+  "description": "通用工具",
   "main": "lib/index.js",
   "scripts": {
     "babel": "node babel",
-    "publish": "npm pu --registry https://registry.npmjs.org/",
+    "publish": "npm pu --registry https://registry.npmjs.org/ --access public",
+    "login": "npm login --registry https://registry.npmjs.org/",
     "test": "node test",
     "unitTest": "node unitTest"
   },
