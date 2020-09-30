@@ -214,7 +214,31 @@ const cacheData = new Cache();
  * @author wangchuitong
  */
 function cache(...args){
-    cacheData.data(...args);
+    return cacheData.data(...args);
+}
+
+/**
+ * 设置缓存
+ * @author wangchuitong
+ */
+export function setCache(key,value){
+    cache(key,value);
+}
+
+/**
+ * 读取缓存
+ * @author wangchuitong
+ */
+export function getCache(key){
+    return cache(key);
+}
+
+/**
+ * 删除缓存
+ * @author wangchuitong
+ */
+export function clearCache(key){
+    return cache(key,null);
 }
 
 /**

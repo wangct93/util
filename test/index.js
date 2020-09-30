@@ -2,5 +2,7 @@
 
 
 const util = require('../lib');
-console.log(util.random(20));
+util.setCache('w','name');
+
+console.log(util.getCache('w'));
 
