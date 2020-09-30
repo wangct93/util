@@ -47,6 +47,7 @@ export class Queue extends BaseData{
     limit:1,
     autoStart:true,
     interval:10,
+    current:0,
   };
 
   init(){

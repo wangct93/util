@@ -140,7 +140,7 @@ export function isEmpty(v){
  * @returns {boolean}
  */
 export function isDef (v) {
-  return !isEmpty();
+  return !isEmpty(v);
 }
 
 /**
