@@ -1,6 +1,7 @@
 import {isFunc,isAry,isDef} from './typeUtil';
 import {validateArray} from "./validateUtil";
 import {defineFunc} from "./defineUtil";
+import {callFunc} from "./util";
 
 /**
  * 转化为数组
@@ -162,4 +163,18 @@ export function aryFindChildren(ary,func,childrenField = 'children',parent = nul
         const childrenResult = children.length && aryFindChildren(children,func,childrenField,item);
         return childrenResult ? list.concat(childrenResult) : list;
     }).reduce((pv,item) => pv.concat(item),[]);
+}
+
+/**
+ * 获取数组中结果为true的一项，并返回结果
+ * @param ary
+ * @param func
+ */
+export function aryFindResult(ary,func){
+    let result = null;
+    toAry(ary).find((item,index) => {
+        result = callFunc(func,item,index,ary);
+        return !!result;
+    });
+    return result;
 }
