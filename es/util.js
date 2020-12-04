@@ -320,12 +320,3 @@ export function exitFullScreen(doc = window.document){
 export function isFullScreen(screen = window.screen){
     return screen.height === window.innerHeight && screen.width === window.innerWidth;
 }
-
-/**
- * 定义赋值
- * @param value
- * @param replaceValue
- */
-export function defineValue(value,replaceValue){
-    return isDef(value) ? value : replaceValue;
-}
