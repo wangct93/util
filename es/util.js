@@ -16,6 +16,7 @@ export function callFunc(func,...ary) {
     if (isFunc(func)) {
         return func.call(this, ...ary);
     }
+    return func;
 }
 
 /**
@@ -194,15 +195,18 @@ export function strEqual(first,second){
  * 捕捉错误
  * @param func
  * @param defaultValue
+ * @param log
  * @returns {*}
  */
-export function catchError(func,defaultValue = ''){
+export function catchError(func,defaultValue = '',log = false){
     let result = defaultValue;
     try{
         result = func();
     }catch(e){
-        console.error('已捕捉：',e);
-        console.log('使用默认值：',defaultValue);
+        if(log){
+            console.error('已捕捉：',e);
+            console.log('使用默认值：',defaultValue);
+        }
     }
     return result;
 }
@@ -292,4 +296,36 @@ export function getShakeProofFunc(func,interval = 1000){
  */
 export function toNumPrecision(num){
     return toNum(toNum(num).toFixed(12));
+}
+
+/**
+ * 全屏方法
+ */
+export function fullScreen(elem = window.document.documentElement){
+    const func = elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
+    callFunc.call(elem,func);
+}
+
+/**
+ * 退出全屏方法
+ */
+export function exitFullScreen(doc = window.document){
+    const func = doc.exitFullscreen || doc.msExitFullscreen || doc.mozCancelFullScreen || doc.webkitCancelFullScreen;
+    callFunc.call(doc,func);
+}
+
+/**
+ * 判断是否全屏
+ */
+export function isFullScreen(screen = window.screen){
+    return screen.height === window.innerHeight && screen.width === window.innerWidth;
+}
+
+/**
+ * 定义赋值
+ * @param value
+ * @param replaceValue
+ */
+export function defineValue(value,replaceValue){
+    return isDef(value) ? value : replaceValue;
 }

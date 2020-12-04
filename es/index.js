@@ -9,6 +9,8 @@ export * from './validateUtil';
 export * from './defineUtil';
 export * from './typeUtil';
 export * from './dataClass';
+export * from './domUtil';
+export * from './pathUtil';
 import * as util from './util';
 import * as stringUtil from './stringUtil';
 import * as arrayUtil from './arrayUtil';
@@ -20,6 +22,8 @@ import * as validateUtil from './validateUtil';
 import * as defineUtil from './defineUtil';
 import * as typeUtil from './typeUtil';
 import * as dataClass from './dataClass';
+import * as domUtil from './domUtil';
+import * as pathUtil from './pathUtil';
 
 export default {
   ...util,
@@ -33,4 +37,6 @@ export default {
   ...defineUtil,
   ...typeUtil,
   ...dataClass,
+  ...domUtil,
+  ...pathUtil,
 };
