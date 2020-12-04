@@ -173,15 +173,6 @@ export function loop(count = 0,func){
 }
 
 /**
- * 路径合并
- * @param args
- * @returns {string}
- */
-export function pathJoin(...args){
-    return args.join('/').replace(/\/+/g,'/');
-}
-
-/**
  * 字符串对等比较
  * @param first
  * @param second
