@@ -311,3 +311,18 @@ export function exitFullScreen(doc = window.document){
 export function isFullScreen(screen = window.screen){
     return screen.height === window.innerHeight && screen.width === window.innerWidth;
 }
+
+/**
+ * 缓存方法结果
+ * @param type
+ * @param func
+ */
+export function getFuncCache(type,func){
+  let result = getCache(type);
+  if(result){
+      return result;
+  }
+  result = callFunc(func);
+  setCache(type,result);
+  return result;
+}
