@@ -102,6 +102,7 @@ export class Queue extends BaseData{
           success:true,
         });
       }).catch((data) => {
+        console.error(data);
         this.addResult({
           data,
           success:false,

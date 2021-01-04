@@ -168,7 +168,7 @@ export function random(length){
  */
 export function loop(count = 0,func){
     return new Array(count).fill(true).map((item,i) => {
-        return callFunc(func,i);
+        return callFunc(func,i,i);
     });
 }
 
