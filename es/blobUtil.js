@@ -1,7 +1,7 @@
 import {toStr} from "./stringUtil";
 
 
-function blobToBase64(blob){
+export function blobToBase64(blob){
   if(!blob){
     return null;
   }

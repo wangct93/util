@@ -12,6 +12,7 @@ export * from './dataClass';
 export * from './domUtil';
 export * from './pathUtil';
 export * from './dateUtil';
+export * from './blobUtil';
 import * as util from './util';
 import * as stringUtil from './stringUtil';
 import * as arrayUtil from './arrayUtil';
@@ -26,6 +27,7 @@ import * as dataClass from './dataClass';
 import * as domUtil from './domUtil';
 import * as pathUtil from './pathUtil';
 import * as dateUtil from './dateUtil';
+import * as blobUtil from './blobUtil';
 
 export default {
   ...util,
@@ -42,4 +44,5 @@ export default {
   ...domUtil,
   ...pathUtil,
   ...dateUtil,
+  ...blobUtil,
 };
