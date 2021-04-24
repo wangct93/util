@@ -1,6 +1,6 @@
 {
   "name": "@wangct/util",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "通用工具",
   "main": "lib/index.js",
   "scripts": {
@@ -20,8 +20,9 @@
   "devDependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.5.2",
     "@babel/runtime": "^7.4.5",
-    "cross-spawn": "^7.0.3",
-    "wangct-babel": "^1.1.2"
+    "@wangct/babel": "^1.0.2",
+    "@wangct/util": "^1.0.8",
+    "cross-spawn": "^7.0.3"
   },
   "dependencies": {
     "moment": "^2.29.1"
