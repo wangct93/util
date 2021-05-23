@@ -1,3 +1,7 @@
+# 1.0.11版本说明
+1、getThrottleFunc 节流方法默认时间改为30ms
+2、getShakeProofFunc 防抖方法默认时间改为30ms
+
 # 1.0.7版本说明
 1、添加文件转base64方法
 

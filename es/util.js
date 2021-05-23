@@ -256,7 +256,7 @@ export function getOnceFunc(func){
  * 获取节流函数
  * @author wangchuitong
  */
-export function getThrottleFunc(func,interval = 1000){
+export function getThrottleFunc(func,interval = 30){
     let sign = +new Date();
     return (...args) => {
         const now = +new Date();
@@ -271,7 +271,7 @@ export function getThrottleFunc(func,interval = 1000){
  * 获取防抖函数
  * @author wangchuitong
  */
-export function getShakeProofFunc(func,interval = 1000){
+export function getShakeProofFunc(func,interval = 30){
     let timer = null;
     return (...args) => {
         clearInterval(timer);

@@ -1,6 +1,6 @@
 {
   "name": "@wangct/util",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "通用工具",
   "main": "lib/index.js",
   "scripts": {
