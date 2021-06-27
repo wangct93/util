@@ -326,3 +326,7 @@ export function getFuncCache(type,func){
   setCache(type,result);
   return result;
 }
+
+export function fromRange(value,range = [-Infinity,Infinity]){
+    return Math.max(Math.min(toNum(value),range[1]),range[0]);
+}
