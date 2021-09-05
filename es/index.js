@@ -13,6 +13,10 @@ export * from './domUtil';
 export * from './pathUtil';
 export * from './dateUtil';
 export * from './blobUtil';
+export * from './browserUtil';
+export * from './cacheUtil';
+export * from './funcUtil';
+export * from './configUtil';
 import * as util from './util';
 import * as stringUtil from './stringUtil';
 import * as arrayUtil from './arrayUtil';
@@ -28,6 +32,10 @@ import * as domUtil from './domUtil';
 import * as pathUtil from './pathUtil';
 import * as dateUtil from './dateUtil';
 import * as blobUtil from './blobUtil';
+import * as browserUtil from './browserUtil';
+import * as cacheUtil from './cacheUtil';
+import * as funcUtil from './funcUtil';
+import * as configUtil from './configUtil';
 
 export default {
   ...util,
@@ -45,4 +53,8 @@ export default {
   ...pathUtil,
   ...dateUtil,
   ...blobUtil,
+  ...browserUtil,
+  ...cacheUtil,
+  ...funcUtil,
+  ...configUtil,
 };

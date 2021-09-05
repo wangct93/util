@@ -1,4 +1,9 @@
 import {defineValue} from "./defineUtil";
+import {getCache, setCache} from "./cacheUtil";
+import {objForEach} from "./objectUtil";
+import {aryInit} from "./arrayUtil";
+import {isUndef} from "./typeUtil";
+import {Fields} from "./Fields";
 
 /**
  * 转化为字符串
@@ -109,4 +114,55 @@ export function queryString(params){
     return stringify(params);
   }
   return strParse(window.location.search.substr(1));
+}
+
+/**
+ * 字符串对等比较
+ * @param first
+ * @param second
+ * @returns {boolean}
+ */
+export function strEqual(first,second){
+  return first + '' === second + '';
+}
+
+export function strGetRandom(length = 8){
+  /**
+   * 获取随机字符
+   * @returns {*}
+   */
+  function getRandomChar(){
+    const chars = getRandomChars();
+    return chars[Math.floor(Math.random() * chars.length)];
+  }
+
+
+  /**
+   * 获取随机字符串列表
+   */
+  function getRandomChars(){
+    let chars = getCache(Fields.random);
+    if(!chars){
+      chars = [];
+      const mapData = {
+        '0':10,
+        'aA':26,
+      };
+      objForEach(mapData,(value,key) => {
+        key.split('').forEach(char => {
+          const baseCode = char.charCodeAt(0);
+          aryInit(value,(item,index) => {
+            chars.push(String.fromCharCode(baseCode + index));
+          });
+        });
+      });
+      setCache(Fields.random,chars);
+    }
+    return chars;
+  }
+  if(isUndef(length)){
+    const preStr = Math.random().toString().substr(3);
+    return parseInt(preStr).toString(36);
+  }
+  return aryInit(length,() => getRandomChar()).join('');
 }

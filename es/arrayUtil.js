@@ -1,4 +1,4 @@
-import {isFunc,isAry,isDef} from './typeUtil';
+import {isFunc, isAry, isDef, isNum} from './typeUtil';
 import {validateArray} from "./validateUtil";
 import {defineFunc} from "./defineUtil";
 import {callFunc} from "./util";
@@ -177,4 +177,18 @@ export function aryFindResult(ary,func){
         return !!result;
     });
     return result;
+}
+
+export function aryInit(func,length = 0){
+    if(isNum(func) && length === 0){
+        length = func;
+        func = null;
+    }
+    return new Array(length).fill(true).map((item,i) => {
+        if(func){
+            return callFunc(func,i,i);
+        }else{
+            return i;
+        }
+    });
 }

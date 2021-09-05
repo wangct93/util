@@ -1,6 +1,7 @@
 
 const unitMap = require('./options');
 const util = require('../lib');
+console.log(util);
 
 startTest(unitMap);
 
@@ -15,7 +16,7 @@ function startTest(mapData){
       return console.log(name + '该方法名不存在');
     }
     console.log('开始测试：',name);
-    util.catchError(() => {
+    const hasErr = util.catchError(() => {
       const errAry = util.toAry(caseList).filter(({i,o,oFunc}) => {
         let result = util[name](...util.toAry(i));
         result = oFunc ? oFunc(result) : result;
@@ -26,8 +27,10 @@ function startTest(mapData){
       }else{
         console.log('测试成功：',name);
       }
-    }).catch(e => {
-      console.log(name,'测试失败，错误：',e);
-    });
+      return true;
+    },'',true);
+    if(!hasErr){
+      console.log(name,'测试失败');
+    }
   });
 }

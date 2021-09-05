@@ -1,10 +1,10 @@
-import {isFunc, isBol, isObj, isAry, isUndef, isDef, isStr, isEmpty} from "./typeUtil";
-import {aryFilterDef} from "./arrayUtil";
-import {stringify, strParse} from "./stringUtil";
+import {isFunc, isBol, isObj, isAry, isDef} from "./typeUtil";
+import {aryFilterDef, aryInit} from "./arrayUtil";
+import {strGetRandom} from "./stringUtil";
 import {objForEach} from "./objectUtil";
-import {Fields} from "./options";
-import {Queue,Cache} from "./dataClass";
-import {toNum} from "./numberUtil";
+import {Queue} from "./dataClass";
+import {getCookie, setCookie} from "./browserUtil";
+import {cloneFunc} from "./funcUtil";
 
 /**
  * 调用函数，过滤错误
@@ -53,15 +53,6 @@ export function onceQueue(data,func,options){
 }
 
 /**
- * 合并class名称
- * @param args
- * @returns {string}
- */
-export function classNames(...args){
-    return args.filter(item => isStr(item)).join(' ');
-}
-
-/**
  * cookie操作
  * @param key
  * @param value
@@ -70,20 +61,10 @@ export function classNames(...args){
  */
 export function cookie(key,value,options = {}) {
     if (isDef(value)) {
-        window.document.cookie = key + '=' + value + ';' + stringify(options, '=', ';');
+        setCookie(key,value,options);
     } else {
-        const cookie = strParse(window.document.cookie, '=', ';');
-        return isDef(key) ? cookie[key] : cookie;
+        return getCookie(key);
     }
-}
-
-/**
- * 克隆方法
- * @param v
- * @returns {never}
- */
-export function cloneFunc(v){
-    return new Function('return ' + v.toString())();
 }
 
 /**
@@ -121,65 +102,21 @@ export function extend(deep,...args){
  * @returns {string}
  */
 export function random(length){
-    /**
-     * 获取随机字符
-     * @returns {*}
-     */
-    function getRandomChar(){
-        const chars = getRandomChars();
-        return chars[Math.floor(Math.random() * chars.length)];
-    }
-
-
-    /**
-     * 获取随机字符串列表
-     */
-    function getRandomChars(){
-        let chars = cache(Fields.random);
-        if(!chars){
-            chars = [];
-            const mapData = {
-                '0':10,
-                'aA':26,
-            };
-            objForEach(mapData,(value,key) => {
-                key.split('').forEach(char => {
-                    const baseCode = char.charCodeAt(0);
-                    loop(value,(item,index) => {
-                        chars.push(String.fromCharCode(baseCode + index));
-                    });
-                });
-            });
-            cache(Fields.random,chars);
-        }
-        return chars;
-    }
-    if(isUndef(length)){
-        const preStr = Math.random().toString().substr(3);
-        return parseInt(preStr).toString(36);
-    }
-    return loop(length,() => getRandomChar()).join('');
+    return strGetRandom(length);
 }
 
 /**
  * 循环次数
- * @param count
- * @param func
  */
-export function loop(count = 0,func){
-    return new Array(count).fill(true).map((item,i) => {
-        return callFunc(func,i,i);
-    });
+export function loop(count,func){
+    return aryInit(func,count);
 }
 
 /**
- * 字符串对等比较
- * @param first
- * @param second
- * @returns {boolean}
+ * 循环次数
  */
-export function strEqual(first,second){
-    return first + '' === second + '';
+export function loopExec(...args){
+    return aryInit(...args);
 }
 
 /**
@@ -200,133 +137,4 @@ export function catchError(func,defaultValue = '',log = false){
         }
     }
     return result;
-}
-
-const cacheData = new Cache();
-
-/**
- * 缓存方法
- * @author wangchuitong
- */
-function cache(...args){
-    return cacheData.data(...args);
-}
-
-/**
- * 设置缓存
- * @author wangchuitong
- */
-export function setCache(key,value){
-    cache(key,value);
-}
-
-/**
- * 读取缓存
- * @author wangchuitong
- */
-export function getCache(key){
-    return cache(key);
-}
-
-/**
- * 删除缓存
- * @author wangchuitong
- */
-export function clearCache(key){
-    return cache(key,null);
-}
-
-/**
- * 获取只调用一次方法
- * @param func
- * @returns {*}
- */
-export function getOnceFunc(func){
-    let flag = false;
-    return (...args) => {
-        if(flag){
-            return;
-        }
-        flag = true;
-        return callFunc(func,...args);
-    }
-}
-
-/**
- * 获取节流函数
- * @author wangchuitong
- */
-export function getThrottleFunc(func,interval = 30){
-    let sign = +new Date();
-    return (...args) => {
-        const now = +new Date();
-        if(now - sign > interval){
-            sign = now;
-            return callFunc(func,...args);
-        }
-    }
-}
-
-/**
- * 获取防抖函数
- * @author wangchuitong
- */
-export function getShakeProofFunc(func,interval = 30){
-    let timer = null;
-    return (...args) => {
-        clearInterval(timer);
-        timer = setTimeout(() => {
-            callFunc(func,...args);
-        },interval);
-    }
-}
-
-/**
- * 数值精度转换
- * @author wangchuitong
- */
-export function toNumPrecision(num){
-    return toNum(toNum(num).toFixed(12));
-}
-
-/**
- * 全屏方法
- */
-export function fullScreen(elem = window.document.documentElement){
-    const func = elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
-    callFunc.call(elem,func);
-}
-
-/**
- * 退出全屏方法
- */
-export function exitFullScreen(doc = window.document){
-    const func = doc.exitFullscreen || doc.msExitFullscreen || doc.mozCancelFullScreen || doc.webkitCancelFullScreen;
-    callFunc.call(doc,func);
-}
-
-/**
- * 判断是否全屏
- */
-export function isFullScreen(screen = window.screen){
-    return screen.height === window.innerHeight && screen.width === window.innerWidth;
-}
-
-/**
- * 缓存方法结果
- * @param type
- * @param func
- */
-export function getFuncCache(type,func){
-  let result = getCache(type);
-  if(result){
-      return result;
-  }
-  result = callFunc(func);
-  setCache(type,result);
-  return result;
-}
-
-export function fromRange(value,range = [-Infinity,Infinity]){
-    return Math.max(Math.min(toNum(value),range[1]),range[0]);
 }
