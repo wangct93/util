@@ -2,7 +2,6 @@ import {toAry} from "./arrayUtil";
 import {callFunc, catchError} from "./util";
 import {isDef, isStr} from "./typeUtil";
 import {stringify, strParse, toStr} from "./stringUtil";
-import {getThrottleFunc} from "./funcUtil";
 
 /**
  * 加载js
@@ -145,24 +144,24 @@ export function elemDragStart(e,options = {}){
   let isMove = false;
   const moveName = isTouchEvent ? 'touchmove' : 'mousemove';
   const upName = isTouchEvent ? 'touchend' : 'mouseup';
-  const mousemove = getThrottleFunc((event) => {
-    event = getDragEvent(event);
+  const mousemove = (moveEvent) => {
+    const event = getDragEvent(moveEvent);
     if(isMove){
       const dx = event.clientX - ox;
       const dy = event.clientY - oy;
-      callFunc(options.onMove,e,dx,dy,dx - moveX,dy - moveY);
+      callFunc(options.onMove,moveEvent,dx,dy,dx - moveX,dy - moveY);
       moveX = dx;
       moveY = dy;
     }else if(Math.abs(event.clientX - ox) > moveLimit || Math.abs(event.clientY - oy) > moveLimit){
       isMove = true;
     }
-  });
-  const mouseup = (e) => {
-    e = getDragEvent(e);
+  };
+  const mouseup = (upEvent) => {
+    const event = getDragEvent(upEvent);
     if(!isMove){
-      callFunc(options.onClick,e);
+      callFunc(options.onClick,upEvent);
     }else{
-      callFunc(options.onUp,e,e.clientX - ox,e.clientY - oy);
+      callFunc(options.onUp,upEvent,event.clientX - ox,event.clientY - oy);
     }
     document.removeEventListener(moveName,mousemove);
     document.removeEventListener(upName,mouseup);
