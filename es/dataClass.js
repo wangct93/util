@@ -10,15 +10,17 @@ import {strGetRandom} from "./stringUtil";
 export class BaseData{
 
   constructor(props){
+    const baseProps = this.getBaseProps ? this.getBaseProps(props) : {};
+    props = {
+      ...baseProps,
+      ...props,
+    };
     this.setProps(props);
   }
 
   setProps(props){
-    if(this.formatProps){
-      props = this.formatProps(props);
-    }
     this.props = {
-      ...this.props,
+      ...this.getProps(),
       ...props,
     }
   }
@@ -53,19 +55,22 @@ export class BaseData{
  * @author wangchuitong
  */
 export class Queue extends BaseData{
-  props = {
-    limit:1,
-    autoStart:true,
-    interval:10,
-    current:0,
-    waitList:[],
-  };
 
   constructor(props) {
     super(props);
     if(this.prop('autoStart')){
       this.start();
     }
+  }
+
+  getBaseProps(){
+    return {
+      limit:1,
+      autoStart:true,
+      interval:10,
+      current:0,
+      waitList:[],
+    };
   }
 
   start() {
