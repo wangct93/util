@@ -128,18 +128,19 @@ export function aryFilterDef(ary){
  * @param func
  * @param childrenField
  * @param parent
+ * @param index
  * @returns {number | * | undefined|*}
  */
-export function aryFindChild(ary,func,childrenField = 'children',parent = null){
+export function aryFindChild(ary,func,childrenField = 'children',parent = null,index = 0){
     validateArray(ary);
     func = defineFunc(func,item => item === func);
     for(let i = 0;i < ary.length;i++){
         const item = ary[i];
-        if(func(item,parent)){
+        if(func(item,parent,index)){
             return item;
         }
         const children = item[childrenField] || [];
-        const childrenResult = children.length && aryFindChild(children,func,childrenField,item);
+        const childrenResult = children.length && aryFindChild(children,func,childrenField,item,index + 1);
 if(childrenResult){
             return childrenResult;
         }
@@ -152,15 +153,16 @@ if(childrenResult){
  * @param func
  * @param childrenField
  * @param parent
+ * @param index
  * @returns {Array}
  */
-export function aryFindChildren(ary,func,childrenField = 'children',parent = null){
+export function aryFindChildren(ary,func,childrenField = 'children',parent = null,index = 0){
     validateArray(ary);
     func = defineFunc(func,item => item === func);
     return ary.map(item => {
-        const list = func(item,parent) ? [item] : [];
+        const list = func(item,parent,index) ? [item] : [];
         const children = item[childrenField] || [];
-        const childrenResult = children.length && aryFindChildren(children,func,childrenField,item);
+        const childrenResult = children.length && aryFindChildren(children,func,childrenField,item,index + 1);
         return childrenResult ? list.concat(childrenResult) : list;
     }).reduce((pv,item) => pv.concat(item),[]);
 }
@@ -179,8 +181,8 @@ export function aryFindResult(ary,func){
     return result;
 }
 
-export function aryInit(func,length = 0){
-    if(isNum(func) && length === 0){
+export function aryInit(func,length = 1){
+    if(isNum(func)){
         length = func;
         func = null;
     }

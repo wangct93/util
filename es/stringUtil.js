@@ -151,9 +151,9 @@ export function strGetRandom(length = 8){
       objForEach(mapData,(value,key) => {
         key.split('').forEach(char => {
           const baseCode = char.charCodeAt(0);
-          aryInit(value,(item,index) => {
+          aryInit((item,index) => {
             chars.push(String.fromCharCode(baseCode + index));
-          });
+          },value);
         });
       });
       setCache(Fields.random,chars);
@@ -164,5 +164,5 @@ export function strGetRandom(length = 8){
     const preStr = Math.random().toString().substr(3);
     return parseInt(preStr).toString(36);
   }
-  return aryInit(length,() => getRandomChar()).join('');
+  return aryInit(() => getRandomChar(),length).join('');
 }
